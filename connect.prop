@@ -1,0 +1,4 @@
+host=172.16.221.1
+port=55553
+user=msf
+pass=pass

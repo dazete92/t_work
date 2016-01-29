@@ -1,0 +1,24 @@
+debug (7 | 24)
+
+on ready {
+	local('$console');
+	$console = console();
+	cmd($console, "services");
+}
+
+on console_services {
+	local('$line $host $port $protocol $name $state $info');
+
+	foreach $line (split("\n", $3)) {
+		if (($line ismatch '(.*?)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(.*?)') || 
+		   ($line ismatch '(.*?)\s+(\d+)\s+(\w+)\s+(\s+)\s+(\w+)\s+(.*?)') || 
+		   ($line ismatch '(.*?)\s+(\d+)\s+(\w+)\s+(\w+-\w+)\s+(\w+)\s+(.*?)')) {
+		   
+			($host, $port, $protocol, $name, $state, $info) = matched();
+			println("$host" . "," . "$port" . "," . "$protocol" . "," . "$name" . "," . 
+			   "$state" . "," . "$info");
+		}
+	}
+	quit();
+}
+

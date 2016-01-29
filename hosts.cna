@@ -1,0 +1,20 @@
+debug (7 | 24)
+
+on ready {
+	local('$console $rand $file');
+	$console = console();
+	cmd($console, "hosts -c address,os_name");
+}
+
+on console_hosts {
+	local('$line $address $mac $name $os_name $os_flavor $os_sp $type $info $comments');
+
+	foreach $line (split("\n", $3)) {
+		if ($line ismatch '(\d+.\d+.\d+.\d+)\s+(.*?)') {
+			($address, $os_name) = matched();
+			println("$address" . "," . "$os_name");
+      		}
+	}
+	quit();
+}
+
