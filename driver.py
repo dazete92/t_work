@@ -30,12 +30,12 @@ def main():
 
    ## host gathering
    db_h = host_db_gen.generate_db()
-   host_db_gen.print_db(db_h)
+   #host_db_gen.print_db(db_h)
 
    ## attack generation
    attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
-   atk_gen.print_attacks(attacks)
-   #atk_gen.generate_attacks(attacks)
+   #atk_gen.print_attacks(attacks)
+   atk_gen.generate_attacks(attacks, db_h)
 
    ## session handling module
    #TODO

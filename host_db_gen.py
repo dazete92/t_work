@@ -45,7 +45,7 @@ def generate_db():
    
    for line in output.splitlines():
       chars = line.split(',')
-      print chars
+      #print chars
       (ip, os_name) = parseData(chars)
 
       # creates dictionary of information for each host
