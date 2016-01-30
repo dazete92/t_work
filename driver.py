@@ -8,14 +8,34 @@ import user_input_handler
 import tool_startup
 
 def main():
-   '''
+
+   ## need to add -init flag and --update flag to input parameters
+   if len(sys.argv) > 1:
+      for arg in sys.argv:
+         if (arg == "-init"):
+            tool_startup.init(server_ip, server_passwd)
+         if (arg == "-update"):
+            tool_startup.update()
+         if (arg == "-h" || arg == "--help"):
+            user_input_handler.print_header()
+            quit()
+   else:
+
    ## user prompt
-   user_input_handler.print_header()
-   (server_ip, server_passwd, ip_ranges, target_ip, target_path, severity) = user_input_handler.prompt_user()
-   print server_ip, server_passwd, ip_ranges, target_ip, target_path, severity
+   #user_input_handler.print_header()
+   #(server_ip, server_passwd, ip_ranges, target_ip, target_path, severity) = user_input_handler.prompt_user()
+   #print server_ip, server_passwd, ip_ranges, target_ip, target_path, severity
 
    ## tool startup
-   tool_startup.init(server_ip, server_passwd)
+   #tool_startup.init(server_ip, server_passwd)
+   if len(sys.argv) > 1:
+      for arg in sys.argv:
+         if (arg == "-init"):
+            tool_startup.init(server_ip, server_passwd)
+         if (arg == "-update"):
+            tool_startup.update()
+   else:
+      
    '''
    ## scanning module (nmap and nessus)
    #TODO
@@ -45,6 +65,6 @@ def main():
    
    ## reporting module
    #TODO
-   
+   '''
 if __name__ == '__main__':
    main()
