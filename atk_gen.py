@@ -33,9 +33,8 @@ def determineAttackVectors(db_e, db_s, db_h):
                   if db_e[service['port']][exploit]['os'] == "multi":
                      db[host][service['port']].append(db_e[service['port']][exploit])
                
-   #print db
    return db
-
+'''
 def generate_attacks(attacks, db_h):
    
    lhost = "172.16.221.1"
@@ -43,13 +42,35 @@ def generate_attacks(attacks, db_h):
       rhost = host
       os = db_h[host]['os_name']
       for port in attacks[host]:
-	 p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
          for attack in range(len(attacks[host][port])):
-	    name = attacks[host][port][attack]['name']
-	    p.stdin.write("cmdline_arg %s %s %s %s\n" % (name, rhost, lhost, os));
+            p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+	         name = attacks[host][port][attack]['name']
+	         p.stdin.write("cmdline_arg %s %s %s %s\n" % (name, rhost, lhost, os));
 	  
-         output = p.communicate()[0]
-	 print port, name, output
+            output = p.communicate()[0]
+	         print port, name, output
       
    p.stdin.close();
+'''
+def generate_attacks(attacks, db_h):
+   
+   lhost = "172.16.222.1"
+   string = ""
+   counter = 0
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'vm.prop', 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   for host in attacks:
+      rhost = host
+      os = db_h[host]['os_name']
+      for port in attacks[host]:
+         for attack in range(len(attacks[host][port])):
+	         name = attacks[host][port][attack]['name']
+	         string += str(name) + "," + str(rhost) + "," + str(lhost) + "," + str(os) + "|"
+	         counter += 1
+	         
+   p.stdin.write("cmdline_arg %s %s" % (str(counter), string))
+   output = p.communicate()[0]
+   print output
+      
+   p.stdin.close();  
+
    

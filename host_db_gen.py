@@ -39,7 +39,7 @@ def generate_db():
 
    db = defaultdict()
 
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'vm.prop', 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
        
    output = p.communicate()[0]
    
