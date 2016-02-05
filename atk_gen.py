@@ -54,18 +54,18 @@ def generate_attacks(attacks, db_h):
 '''
 def generate_attacks(attacks, db_h):
    
-   lhost = "172.16.222.1"
+   lhost = "172.16.221.1"
    string = ""
    counter = 0
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'vm.prop', 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
    for host in attacks:
       rhost = host
       os = db_h[host]['os_name']
       for port in attacks[host]:
          for attack in range(len(attacks[host][port])):
-	         name = attacks[host][port][attack]['name']
-	         string += str(name) + "," + str(rhost) + "," + str(lhost) + "," + str(os) + "|"
-	         counter += 1
+            name = attacks[host][port][attack]['name']
+	    string += str(name) + "|" + str(rhost) + "|" + str(lhost) + "|" + str(os) + ","
+	    counter += 1
 	         
    p.stdin.write("cmdline_arg %s %s" % (str(counter), string))
    output = p.communicate()[0]

@@ -7,7 +7,7 @@ on ready {
 command cmdline_arg {
    local('$console $attack $payload @attacks');
    $console = console();
-   @attacks = split('|', $2);
+   @attacks = split(',', $2);
    
    println(@attacks);
    quit();
