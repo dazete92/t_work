@@ -1,0 +1,36 @@
+on ready {
+   local('$console');
+   $console = console();
+   cmd($console, "workspace");
+   cmd($console, "workspace -h");
+   fire_event_local("input");
+}
+
+command arguments {
+   local('$console');
+   $console = console();
+   
+   if ($1 eq "add") {
+      cmd($console, "workspace -a $2");
+   }
+   else if ($1 eq "delete") {
+      cmd($console, "workspace -d $2");
+   }
+   else if ($1 eq "list") {
+      cmd($console, "workspace");
+   }
+   else if ($1 eq "switch") {
+      cmd($console, "workspace $2");
+   }
+}
+
+on console_workspace {
+   println("$3");
+}
+
+on input {
+   local('$name');
+   print("?: ");
+   $name = readln();
+   quit();
+}

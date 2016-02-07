@@ -6,6 +6,7 @@ import host_db_gen
 import atk_gen
 import user_input_handler
 import tool_startup
+import nmap_scan
 
 def main():
 
@@ -33,8 +34,8 @@ def main():
    #tool_startup.init(server_ip, server_passwd)
    
    ## scanning module (nmap and nessus)
-   #TODO
-
+   nmap_scan.scan_setup()
+'''
    ## exploit gathering
    db_e = exploit_db_gen.generate_db()
    #exploit_db_gen.print_db(db_e)
@@ -60,6 +61,6 @@ def main():
    
    ## reporting module
    #TODO
-   
+'''
 if __name__ == '__main__':
    main()
