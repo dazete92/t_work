@@ -26,7 +26,7 @@ def main():
    
    
    ## scanning module (nmap and nessus)
-   #scan = nmap_scan.scan_location_setup()
+   scan = nmap_scan.scan_location_setup()
    #if scan == "y" or scan == "Y":
       #nmap_scan.scan(ip_ranges)
 
@@ -45,7 +45,7 @@ def main():
    ## attack generation
    attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
    atk_gen.print_attacks(attacks)
-   #atk_gen.generate_attacks(attacks, db_h)	# should return something
+   atk_gen.generate_attacks(attacks, db_h)	# should return something
 '''
    ## session handling module
    #TODO

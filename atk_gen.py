@@ -96,11 +96,10 @@ def generate_attacks(attacks, db_h):
    for host in attacks:
       rhost = host
       os = db_h[host]['os_name']
-      for port in attacks[host]:
-         for attack in range(len(attacks[host][port])):
-            name = attacks[host][port][attack]['name']
-	    string += str(name) + "|" + str(rhost) + "|" + str(lhost) + "|" + str(os) + ","
-	    counter += 1
+      for attack in range(len(attacks[host])):
+         name = attacks[host][attack]['name']
+	 string += str(name) + "|" + str(rhost) + "|" + str(lhost) + "|" + str(os) + ","
+	 counter += 1
 	         
    p.stdin.write("cmdline_arg %s %s" % (str(counter), string))
    output = p.communicate()[0]

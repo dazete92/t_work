@@ -5,12 +5,13 @@ on ready {
 }
 
 command cmdline_arg {
-   local('$console $attack $payload @attacks');
-   $console = console();
-   @attacks = split(',', $2);
+   local('$counter @attacks');
+
+   $counter = $1;
+   @attacks = split(',' $2);
    
    println(@attacks);
-   quit();
+   fire_event_local("launch_attacks", $counter, @attacks);
 }
 
 sub determinePayload {
@@ -44,3 +45,8 @@ on session_open {
  #  println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
  #  quit();
 #}
+
+on launch_attacks {
+   println("$1 => $2");
+   quit();
+}
