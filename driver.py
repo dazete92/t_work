@@ -10,10 +10,10 @@ import nmap_scan
 
 def main():
 
-   ## geteuid check
+   ## user prompt
+   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity) = user_input_handler.prompt_user()
 
-   '''
-   ## need to add -init flag and --update flag to input parameters
+   ## tool startup
    if len(sys.argv) > 1:
       for arg in sys.argv:
          if (arg == "-init"):
@@ -23,19 +23,13 @@ def main():
          if (arg == "-h" or arg == "--help"):
             user_input_handler.print_header()
             quit()
-   '''
-
-   ## user prompt
-   #user_input_handler.print_header()
-   #(server_ip, server_passwd, ip_ranges, target_ip, target_path, severity) = user_input_handler.prompt_user()
-   #print server_ip, server_passwd, ip_ranges, target_ip, target_path, severity
-
-   ## tool startup
-   #tool_startup.init(server_ip, server_passwd)
+   
    
    ## scanning module (nmap and nessus)
-   nmap_scan.scan_setup()
-'''
+   #scan = nmap_scan.scan_location_setup()
+   #if scan == "y" or scan == "Y":
+      #nmap_scan.scan(ip_ranges)
+
    ## exploit gathering
    db_e = exploit_db_gen.generate_db()
    #exploit_db_gen.print_db(db_e)
@@ -52,7 +46,7 @@ def main():
    attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
    atk_gen.print_attacks(attacks)
    #atk_gen.generate_attacks(attacks, db_h)	# should return something
-
+'''
    ## session handling module
    #TODO
    

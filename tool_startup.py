@@ -1,6 +1,5 @@
 import sys
 import time
-from invoke import run, task
 import subprocess
 
 def init(ip, passwd):
@@ -9,7 +8,7 @@ def init(ip, passwd):
    p = subprocess.Popen(['sudo', 'service', 'postgresql', 'start'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
    print "Initializing the Cortana team server..."
-   p = subprocess.Popen(['sudo', 'teamserver', str(ip), str(passwd)], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['sudo', 'teamserver', str(ip), str(passwd), '&'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
    print "Sleeping for 30 seconds..."
    time.sleep(30)

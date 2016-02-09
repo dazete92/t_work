@@ -1,28 +1,39 @@
 import sys
 import subprocess
 
-def scan_setup():
+def scan_location_setup():
 
    command = ""
-   
-   while True:
-      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-      p.stdin.write("arguments %s" % "list")
-      output = p.communicate()[0]
-      p.stdin.close()
-      print "Workspaces (* = current):"
-      print output
-   
-      print "Commands: add delete switch proceed\n"
-   
-      command = raw_input("Enter command: ")
-      if (command == "proceed"):
-         break
-      name = raw_input("Enter workspace name: ")
-      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-      p.stdin.write("arguments %s %s" % (command, name))
-      p.stdin.close()
+
+   print "\nDetermine destination of scan data or previous scan data\n"
       
+   while True:
+      print "Workspaces (* = current):"
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdin=subprocess.PIPE)
+      p.stdin.write("arguments %s" % "list")
+      p.communicate()
+      p.stdin.close()
+   
+      print "Commands:"
+      print " > add <workspace name>      Add a workspace"
+      print " > delete <workspace name>   Delete a workspace"
+      print " > switch <workspace name>   Switch to an existing workspace"
+      print " > current                   Use current settings\n"
+   
+      i = raw_input("Enter command: ")
+      command = i.split(' ')
+      if (command[0] == "current"):
+         break
+
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+      p.stdin.write("arguments %s %s" % (str(command[0]), str(command[1])))
+      p.communicate()
+      p.stdin.close()
+
+   scan = raw_input("Perform scan on selected IPs? (y/n): ")
+   return scan
+   
+   
       
       
    

@@ -1,14 +1,11 @@
 on ready {
-   local('$console');
-   $console = console();
-   cmd($console, "workspace");
-   cmd($console, "workspace -h");
-   fire_event_local("input");
+
 }
 
 command arguments {
    local('$console');
    $console = console();
+   println("1st: $1");
    
    if ($1 eq "add") {
       cmd($console, "workspace -a $2");
@@ -26,11 +23,5 @@ command arguments {
 
 on console_workspace {
    println("$3");
-}
-
-on input {
-   local('$name');
-   print("?: ");
-   $name = readln();
    quit();
 }
