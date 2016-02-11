@@ -44,7 +44,7 @@ def main():
 
    ## attack generation
    attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
-   atk_gen.print_attacks(attacks)
+   #atk_gen.print_attacks(attacks)
    atk_gen.generate_attacks(attacks, db_h)	# should return something
 '''
    ## session handling module
