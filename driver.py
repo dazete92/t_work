@@ -27,8 +27,8 @@ def main():
    
    ## scanning module (nmap and nessus)
    scan = nmap_scan.scan_location_setup()
-   #if scan == "y" or scan == "Y":
-      #nmap_scan.scan(ip_ranges)
+   if scan == "y" or scan == "Y":
+      nmap_scan.scan(ip_ranges)
 
    ## exploit gathering
    db_e = exploit_db_gen.generate_db()

@@ -33,7 +33,17 @@ def scan_location_setup():
    scan = raw_input("Perform scan on selected IPs? (y/n): ")
    return scan
    
+def scan(ip_ranges):
    
+   ips = ""
+   
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'nmap_scan'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
+   
+   for i in range (0, len(ip_ranges)):
+      ips += str(ip_ranges[i]) + ","
+      
+   ips = ips[:len(ips)-1]
+   print ips
       
       
    
