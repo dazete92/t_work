@@ -1,4 +1,24 @@
 command arguments {
+   local('@ips');
 
+   @ips = split(';', "$1");
    
+   fire_event_local("launch_scan", @ips);
+}
+
+on launch_scan {
+   local('$console $ip $ips');
+   
+   $console = console();
+   
+   foreach $ip ($1) {
+      $ips = $ips . $ip . " "
+   }
+
+   cmd($console, "db_nmap --min-hostgroup 96 -T4 -A -v -n $ips");
+}
+
+on console_db_nmap {
+   println("Scanning Done.");
+   quit();
 }

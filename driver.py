@@ -31,21 +31,21 @@ def main():
       nmap_scan.scan(ip_ranges)
 
    ## exploit gathering
-   db_e = exploit_db_gen.generate_db()
+   #db_e = exploit_db_gen.generate_db()
    #exploit_db_gen.print_db(db_e)
    
    ## service gathering
-   db_s = service_db_gen.generate_db()
+   #db_s = service_db_gen.generate_db()
    #service_db_gen.print_db(db_s)
 
    ## host gathering
-   db_h = host_db_gen.generate_db()
+   #db_h = host_db_gen.generate_db()
    #host_db_gen.print_db(db_h)
 
    ## attack generation
-   attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
+   #attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
    #atk_gen.print_attacks(attacks)
-   atk_gen.generate_attacks(attacks, db_h)	# should return something
+   #atk_gen.generate_attacks(attacks, db_h)	# should return something
 '''
    ## session handling module
    #TODO
