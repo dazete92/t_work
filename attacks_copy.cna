@@ -1,9 +1,3 @@
-debug (7 | 24)
-
-on ready {
-
-}
-
 command arguments {
    local('$counter @attacks $payload');
 
@@ -27,19 +21,8 @@ on launch_attacks {
          target => "0"));
       cmd($console, "exploit -j");
       
-      println("loop");
-      spawn({
-         sub timer {
-            local('$console');
-            $console = console();
-            cmd($console, "jobs -K");
-            cmd_stop($console);
-            
-            sleep(10000);
-            quit();
-         }
-      });
-      quit();
+      sleep(15000);
+      cmd($console, "jobs -K");
    }
     
    quit();
@@ -56,7 +39,6 @@ on session_open {
    local('$flag $host $user $sessionNum %r');
    %r = $2;
    $flag = "success";
-   #println("Session open: $1 => $2");
    $sessionNum = $1;
    $host = %r["host"];
    $user = %r["username"];
