@@ -54,7 +54,7 @@ def determineAttackVectors(db_e, db_s, db_h):
       db[host] = []
       services_list = db_s[host]
       for service in services_list:
-         if service['state'] == "open":
+         if service['state'] == "open" or service['state'] == "unknown":
             if service['port'] in db_e:
                for exploit in range(len(db_e[service['port']])):
                   if db_e[service['port']][exploit]['os'] == db_h[host]['os_name']:

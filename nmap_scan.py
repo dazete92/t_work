@@ -22,7 +22,7 @@ def scan_location_setup():
    
       i = raw_input("Enter command: ")
       command = i.split(' ')
-      if (command[0] == "current"):
+      if command[0] == "current":
          break
 
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)

@@ -13,14 +13,18 @@ def main():
    ## user prompt
    (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity) = user_input_handler.prompt_user()
 
+   exploit_file_gen = 0
+
    ## tool startup
    if len(sys.argv) > 1:
       for arg in sys.argv:
-         if (arg == "-init"):
+         if arg == "-init":
             tool_startup.init(server_ip, server_passwd)
-         if (arg == "-update"):
+	    exploit_file_gen = 1
+         if arg == "-update":
             tool_startup.update()
-         if (arg == "-h" or arg == "--help"):
+            exploit_file_gen = 1
+         if arg == "-h" or arg == "--help":
             user_input_handler.print_header()
             quit()
    
@@ -31,20 +35,20 @@ def main():
       nmap_scan.scan(ip_ranges)
 
    ## exploit gathering
-   #db_e = exploit_db_gen.generate_db()
+   db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
    
    ## service gathering
-   #db_s = service_db_gen.generate_db()
+   db_s = service_db_gen.generate_db()
    #service_db_gen.print_db(db_s)
 
    ## host gathering
-   #db_h = host_db_gen.generate_db()
+   db_h = host_db_gen.generate_db()
    #host_db_gen.print_db(db_h)
 
    ## attack generation
-   #attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
-   #atk_gen.print_attacks(attacks)
+   attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
+   atk_gen.print_attacks(attacks)
    #atk_gen.generate_attacks(attacks, db_h)	# should return something
 '''
    ## session handling module

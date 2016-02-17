@@ -15,7 +15,7 @@ on launch_scan {
       $ips = $ips . $ip . " "
    }
 
-   cmd($console, "db_nmap --min-hostgroup 96 -T4 -A -v -n $ips");
+   cmd($console, "db_nmap --min-hostgroup 96 -sS -n -sU -T4 -A -v -n -F $ips");
 }
 
 on console_db_nmap {

@@ -5,7 +5,7 @@ import subprocess
 def init(ip, passwd):
 
    print "Starting Postgresql..."
-   p = subprocess.Popen(['sudo', 'service', 'postgresql', 'start'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['sudo', 'service', 'postgresql', 'start'])
 
    print "Initializing the Cortana team server..."
    p = subprocess.Popen(['sudo', 'teamserver', str(ip), str(passwd)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -23,5 +23,5 @@ def init(ip, passwd):
    
 def update():
    print "Updating Metasploit..."
-   p = subprocess.Popen(['sudo', 'msfupdate'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-   output = p.communicate()[0]
+   p = subprocess.Popen(['sudo', 'msfupdate'])
+   output = p.communicate()
