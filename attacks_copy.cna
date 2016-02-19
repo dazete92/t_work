@@ -21,7 +21,7 @@ on launch_attacks {
          target => "0"));
       cmd($console, "exploit -j");
       
-      sleep(15000);
+      sleep(10000);
       cmd($console, "jobs -K");
    }
     
