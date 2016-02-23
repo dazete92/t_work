@@ -37,6 +37,7 @@ def write_db_to_file(output):
 
 def generate_db():
 
+   print "Generating host database"
    db = defaultdict()
 
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)

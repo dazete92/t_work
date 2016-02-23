@@ -35,6 +35,7 @@ def scan_location_setup():
    
 def scan(ip_ranges):
    
+   print "Initializing Nmap scan"
    ips = ""
    
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);

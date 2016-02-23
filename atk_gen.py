@@ -47,6 +47,7 @@ def determineAttackVectors(db_e, db_s, db_h):
 '''
 def determineAttackVectors(db_e, db_s, db_h):
    # figures out attack vectors based on hosts and services
+   print "Creating Attack Vectors"
 
    db = defaultdict()
    
@@ -89,6 +90,8 @@ def generate_attacks(attacks, db_h):
 '''
 def generate_attacks(attacks, db_h):
    
+   print "Generating attack string"
+
    lhost = "172.16.221.1"
    string = ""
    counter = 0
@@ -98,10 +101,11 @@ def generate_attacks(attacks, db_h):
       os = db_h[host]['os_name']
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
-	 string += str(name) + "," + str(rhost) + "," + str(lhost) + "," + str(os) + ";"
+	 string += str(rhost) + "," + str(name) + "," + str(lhost) + "," + str(os) + ";"
 	 counter += 1
-	         
-   p.stdin.write("arguments %s %s %s" % (str(counter), string, os))
+
+   print "Launching attack string"         
+   p.stdin.write("arguments %s %s" % (str(counter), string))
    output = p.communicate()[0]
    print output
       
