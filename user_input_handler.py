@@ -21,10 +21,10 @@ def prompt_user():
    server_ip = server_list[0]
    server_passwd = server_list[1]
 
-   print "\nPlease provide the number and CIDR ranges of the machines to be scanned: "
-   input_params = raw_input("<# of IP ranges> <ipRange1> <ipRange2> ...: ") 
+   print "\nPlease provide the IP ranges of the machines to be scanned in CIDR format: "
+   input_params = raw_input("<ipRange1> <ipRange2> ...: ") 
    input_list = input_params.split(' ')
-   for i in range (1, len(input_list)):
+   for i in range (0, len(input_list)):
       ip_ranges.append(input_list[i])
       
    target_ip = raw_input("\nIf desired, select a target machine: <target IP>: ")
