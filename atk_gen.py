@@ -110,5 +110,3 @@ def generate_attacks(attacks, db_h):
    print output
       
    p.stdin.close();  
-
-   

@@ -41,7 +41,7 @@ def scan(ip_ranges):
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
    
    for i in range (0, len(ip_ranges)):
-      ips += str(ip_ranges[i]) + ","  
+      ips += str(ip_ranges[i]) + ";"  
    ips = ips[:len(ips)-1]
    
    p.stdin.write("arguments %s" % ips)
