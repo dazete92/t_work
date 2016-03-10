@@ -11,7 +11,7 @@ import nmap_scan
 def main():
 
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity) = user_input_handler.prompt_user()
+   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity, host_list) = user_input_handler.prompt_user()
 
    exploit_file_gen = 0
 

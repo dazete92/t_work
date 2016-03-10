@@ -1,7 +1,8 @@
 import sys
 import os
-from netaddr import IPNetwork, IPAddress
+from netaddr import IPNetwork, IPAddress, IPRange
 import pprint
+from collections import defaultdict
 
 def print_header():
    print "Adaptive Exploitation and Targeted Pentesting System"
@@ -26,14 +27,16 @@ def prompt_user():
    input_list = input_params.split(' ')
    for i in range (0, len(input_list)):
       ip_ranges.append(input_list[i])
+
+   host_list = parseIPRanges(ip_ranges)
       
    target_ip = raw_input("\nIf desired, select a target machine: <target IP>: ")
    target_location = isTargetInRange(ip_ranges, target_ip) if target_ip != "" else False
 
    #severity = raw_input("Enter an exploitation reliability threshold (1 - 5, 1 = poor, 5 = excellent): ")
    severity = 6
-      
-   return (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity)
+
+   return (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity, host_list)
    
 def isTargetInRange(ip_ranges, target_ip):
 
@@ -45,3 +48,17 @@ def isTargetInRange(ip_ranges, target_ip):
          return True
 
    return False
+
+def parseIPRanges (ip_ranges):
+
+   ips = defaultdict()
+
+   for i in range(0, len(ip_ranges)):
+      ip = IPNetwork(ip_ranges[i])
+      for l in list(ip):
+         print l.__str__()
+         ips[] = []
+
+   print ips
+         
+      

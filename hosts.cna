@@ -13,7 +13,7 @@ on console_hosts {
 		if ($line ismatch '(\d+.\d+.\d+.\d+)\s+(.*?)') {
 			($address, $os_name) = matched();
 			println("$address" . "," . "$os_name");
-      		}
+      	}
 	}
 	quit();
 }

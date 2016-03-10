@@ -52,6 +52,7 @@ def determineAttackVectors(db_e, db_s, db_h):
    db = defaultdict()
    
    for host in db_h:
+      #if host in host_list:
       db[host] = []
       services_list = db_s[host]
       for service in services_list:
