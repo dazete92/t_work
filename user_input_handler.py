@@ -49,16 +49,15 @@ def isTargetInRange(ip_ranges, target_ip):
 
    return False
 
-def parseIPRanges (ip_ranges):
+def parseIPRanges(ip_ranges):
 
    ips = defaultdict()
 
    for i in range(0, len(ip_ranges)):
       ip = IPNetwork(ip_ranges[i])
       for l in list(ip):
-         print l.__str__()
-         ips[] = []
+         ips[l.__str__()] = []
 
-   print ips
+   return ips
          
       

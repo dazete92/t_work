@@ -10,8 +10,8 @@ def init(ip, passwd):
    print "Initializing the Cortana team server..."
    p = subprocess.Popen(['sudo', 'teamserver', str(ip), str(passwd)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-   print "Sleeping for 30 seconds..."
-   time.sleep(30)
+   print "Sleeping for 45 seconds..."
+   time.sleep(45)
 
    print "Creating .prop file..."
    prop_file = open("test.prop", "w")

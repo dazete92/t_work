@@ -7,11 +7,13 @@ import atk_gen
 import user_input_handler
 import tool_startup
 import nmap_scan
+import post_exploit
 
 def main():
 
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity, host_list) = user_input_handler.prompt_user()
+   (server_ip, server_passwd, ip_ranges, target_ip, 
+      target_location, severity, host_list) = user_input_handler.prompt_user()
 
    exploit_file_gen = 0
 
@@ -20,7 +22,7 @@ def main():
       for arg in sys.argv:
          if arg == "-init":
             tool_startup.init(server_ip, server_passwd)
-	    exploit_file_gen = 1
+            exploit_file_gen = 1
          if arg == "-update":
             tool_startup.update()
             exploit_file_gen = 1
@@ -37,7 +39,7 @@ def main():
    ## exploit gathering
    db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
-   
+
    ## service gathering
    db_s = service_db_gen.generate_db()
    #service_db_gen.print_db(db_s)
@@ -47,16 +49,16 @@ def main():
    #host_db_gen.print_db(db_h)
 
    ## attack generation
-   attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h)
+   attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
    #atk_gen.print_attacks(attacks)
-   atk_gen.generate_attacks(attacks, db_h)	# should return something
-'''
-   ## session handling module
-   #TODO
-   
+   sessions = atk_gen.generate_attacks(attacks, db_h)
+
    ## privilege escalation module (combine with pivoting)
-   #TODO
-   
+   post_exploit.session_handler(sessions, target_ip, target_location)
+'''
+   ## exploit db updater
+   exploit_db_gen.update_db(db_e, sessions)
+
    ## reporting module
    #TODO
 '''
