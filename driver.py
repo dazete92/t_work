@@ -54,10 +54,13 @@ def main():
    sessions = atk_gen.generate_attacks(attacks, db_h)
 
    ## privilege escalation module (combine with pivoting)
-   post_exploit.session_handler(sessions, target_ip, target_location)
+
+   session_db = post_exploit.parseSessionData(sessions)
+   post_exploit.session_handler(session_db, target_ip, target_location)
+
 '''
    ## exploit db updater
-   exploit_db_gen.update_db(db_e, sessions)
+   exploit_db_gen.update_db(db_e, db_h, session_db)
 
    ## reporting module
    #TODO

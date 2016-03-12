@@ -100,7 +100,7 @@ on sessionHandle {
    
    @ids = session_ids();
    %out = sessions();
-   $flag = "success";
+   $flag = "true";
    $console = console();
 
    cmd($console, "jobs -K");   
@@ -120,5 +120,5 @@ on noSessions {
    local('$host');
    $host = $1;
 
-   println("$host" . ",failure,0,0,0");
+   println("$host" . ",false,0,0,0");
 }
