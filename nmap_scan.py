@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import shared
 
 def scan_location_setup():
 
@@ -7,9 +8,9 @@ def scan_location_setup():
 
    print "\nDetermine destination of scan data or previous scan data\n"
       
-   while True:
+   while False: #True:
       print "Workspaces (* = current):"
-      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdin=subprocess.PIPE)
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared.prop_file_name), 'workspace.cna'], stdin=subprocess.PIPE)
       p.stdin.write("arguments %s" % "list")
       p.communicate()
       p.stdin.close()
@@ -25,20 +26,20 @@ def scan_location_setup():
       if command[0] == "current":
          break
 
-      p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'workspace.cna'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared.prop_file_name), 'workspace.cna'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
       p.stdin.write("arguments %s %s" % (str(command[0]), str(command[1])))
       p.communicate()
       p.stdin.close()
 
-   scan = raw_input("Perform scan on selected IPs? (y/n): ")
-   return scan
+   #scan = raw_input("Perform scan on selected IPs? (y/n): ")
+   return "n" #scan
    
 def scan(ip_ranges):
    
    print "Initializing Nmap scan"
    ips = ""
    
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared.prop_file_name), 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
    
    for i in range (0, len(ip_ranges)):
       ips += str(ip_ranges[i]) + ";"  

@@ -1,6 +1,7 @@
 import sys
 import time
 import subprocess
+import shared
 from operator import itemgetter
 from subprocess import Popen, PIPE, STDOUT
 from collections import defaultdict
@@ -96,13 +97,13 @@ def generate_attacks(attacks, db_h):
    lhost = "172.16.221.1"
    string = ""
    counter = 0
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', 'connect.prop', 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared.prop_file_name), 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
    for host in attacks:
       rhost = host
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
-	 string += str(rhost) + "," + str(name) + "," + str(lhost) + ";"
-	 counter += 1
+	      string += str(rhost) + "," + str(name) + "," + str(lhost) + ";"
+	      counter += 1
 
    print "Launching attack string"         
    p.stdin.write("arguments %s %s" % (str(counter), string))

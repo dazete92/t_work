@@ -5,15 +5,18 @@ import service_db_gen
 import host_db_gen
 import atk_gen
 import user_input_handler
-import tool_startup
+import service_startup
 import nmap_scan
 import post_exploit
+import shared
 
 def main():
 
+   shared.defineGlobals()
+   prop_file_gen = False if "-init" in sys.argv else True
+
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, 
-      target_location, severity, host_list) = user_input_handler.prompt_user()
+   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity, host_list) = user_input_handler.prompt_user(prop_file_gen)
 
    exploit_file_gen = 0
 
@@ -21,15 +24,16 @@ def main():
    if len(sys.argv) > 1:
       for arg in sys.argv:
          if arg == "-init":
-            tool_startup.init(server_ip, server_passwd)
+            service_startup.init(server_ip, server_passwd)
             exploit_file_gen = 1
          if arg == "-update":
-            tool_startup.update()
+            service_startup.update()
             exploit_file_gen = 1
          if arg == "-h" or arg == "--help":
             user_input_handler.print_header()
             quit()
-   
+
+   print "Prop file name: " + str(shared.prop_file_name)
    
    ## scanning module (nmap and nessus)
    scan = nmap_scan.scan_location_setup()
@@ -56,7 +60,8 @@ def main():
    ## privilege escalation module (combine with pivoting)
 
    session_db = post_exploit.parseSessionData(sessions)
-   post_exploit.session_handler(session_db, target_ip, target_location)
+   print session_db
+   #post_exploit.session_handler(session_db, target_ip, target_location)
 
 '''
    ## exploit db updater
