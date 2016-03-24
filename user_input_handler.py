@@ -1,8 +1,6 @@
 import sys
 import os
-from netaddr import IPNetwork, IPAddress, IPRange
-import pprint
-import shared
+import shared_util
 from collections import defaultdict
 
 def print_header():
@@ -13,7 +11,6 @@ def prompt_user(prop_file_gen):
 
    ip_ranges = []
    target_ip = ""
-   target_path = ""
    server_ip = ""
    server_passwd = ""
 
@@ -29,10 +26,9 @@ def prompt_user(prop_file_gen):
    for i in range (0, len(input_list)):
       ip_ranges.append(input_list[i])
 
-   host_list = parseIPRanges(ip_ranges)
+   host_list = shared_util.parseIPRanges(ip_ranges)
       
    target_ip = "" #raw_input("\nIf desired, select a target machine: <target IP>: ")
-   target_location = False #isTargetInRange(ip_ranges, target_ip) if target_ip != "" else False
 
    #severity = raw_input("Enter an exploitation reliability threshold (1 - 5, 1 = poor, 5 = excellent): ")
    severity = 6
@@ -41,28 +37,4 @@ def prompt_user(prop_file_gen):
    if prop_file_gen is True:
       #shared.prop_file_name = raw_input("\nPlease provide the name of the .prop file to be used to connect to the team server: ")
 
-   return (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity)
-   
-def isTargetInRange(ip_ranges, target_ip):
-
-   target = int(IPAddress(target_ip))
-
-   for i in range(0, len(ip_ranges)):
-      ip = IPNetwork(ip_ranges[i])
-      if (ip.first <= target and ip.last >= target):
-         return True
-
-   return False
-
-def parseIPRanges(ip_ranges):
-
-   ips = defaultdict()
-
-   for i in range(0, len(ip_ranges)):
-      ip = IPNetwork(ip_ranges[i])
-      for l in list(ip):
-         ips[l.__str__()] = []
-
-   return ips
-         
-      
+   return (server_ip, server_passwd, ip_ranges, target_ip, severity, host_list)

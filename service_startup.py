@@ -1,7 +1,7 @@
 import sys
 import time
 import subprocess
-import shared
+import shared_util
 
 def init(ip, passwd):
 

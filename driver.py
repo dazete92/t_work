@@ -8,15 +8,15 @@ import user_input_handler
 import service_startup
 import nmap_scan
 import post_exploit
-import shared
+import shared_util
 
 def main():
 
-   shared.defineGlobals()
+   shared_util.defineGlobals()
    prop_file_gen = False if "-init" in sys.argv else True
 
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, target_location, severity, host_list) = user_input_handler.prompt_user(prop_file_gen)
+   (server_ip, server_passwd, ip_ranges, target_ip, severity, host_list) = user_input_handler.prompt_user(prop_file_gen)
 
    exploit_file_gen = 0
 
@@ -61,7 +61,7 @@ def main():
 
    session_db = post_exploit.parseSessionData(sessions)
    print session_db
-   #post_exploit.session_handler(session_db, target_ip, target_location)
+   #post_exploit.searchForTarget(session_db, target_ip, target_location, attacks, db_e, db_h, db_s)
 
 '''
    ## exploit db updater

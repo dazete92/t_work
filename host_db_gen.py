@@ -1,6 +1,7 @@
 import sys
 import time
 import subprocess
+import shared_util
 from subprocess import Popen, PIPE, STDOUT
 from collections import defaultdict
 
@@ -40,7 +41,7 @@ def generate_db():
    print "Generating host database"
    db = defaultdict()
 
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared.prop_file_name), 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
        
    output = p.communicate()[0]
    
