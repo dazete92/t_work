@@ -1,3 +1,5 @@
+debug(7);
+
 on ready {
    #fire_event_local("sessionHandle");
 }

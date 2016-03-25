@@ -8,10 +8,10 @@ command arguments {
    local('@sessions');
    @sessions = split(';', $1);
    println("arguments");
-   fire_event_local("elevatePrivileges", @sessions)
+   fire_event_local("manageSessions", @sessions)
 }
 
-on elevatePrivileges {
+on manageSessions {
    println("privileges");
    local('$console $session @info @sessions');
    $console = console();
