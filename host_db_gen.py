@@ -17,7 +17,7 @@ def print_db(db):
    
    for key in db:
       print key, db[key]
-         
+''' 
 def write_db_to_file(output):
    db_file = open("db_hosts.txt", 'w')
    
@@ -35,6 +35,7 @@ def write_db_to_file(output):
       db_file.write("\n")
    
       db_file.close()
+'''
 
 def generate_db():
 

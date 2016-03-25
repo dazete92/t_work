@@ -43,7 +43,7 @@ def generate_attacks(attacks, db_h):
    
    print "Generating attack string"
 
-   lhost = "172.16.221.1"
+   lhost = "172.16.222.1"
    string = ""
    counter = 0
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)

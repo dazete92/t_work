@@ -1,0 +1,4 @@
+on session_open {
+	println(" $1 : $2");
+	quit();
+}

