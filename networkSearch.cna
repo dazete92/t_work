@@ -1,67 +1,94 @@
 debug(7);
 
 on ready {
-   println("ready");
+   #println("ready");
 }
 
 command arguments {
    local('@sessions');
    @sessions = split(';', $1);
-   println("arguments");
+   #println("arguments");
    fire_event_local("networkSearch", @sessions);
 }
 
 on networkSearch {
-   local('$console $session @sessions @ips @masks @networks @info $sid');
+   local('$console $session @sessions @ips @masks %networks @info $sid $line @output $temp');
    $console = console();
    @sessions = $1;
-   #on("console", $this);
+
+         #on("console", $this);
    on("meterpreter", $this);
-   #on("shell", $this);
+         #on("shell", $this);
 
    foreach $session (@sessions) {
       @info = split(",", $session);
-      println(@info);
+      #println(@info);
+
       $sid = @info[0];
       cmd($console, "sessions -i $sid");
-      println("first shell command");
+            #println("first shell command");
             #m_cmd($sid, "ifconfig"); # | grep 'inet addr' | cut -d: -f2 | awk '{print \$1 }'");
             #m_cmd($sid, "ifconfig");
       m_cmd($sid, "ipconfig");
       yield;
 
-      println("$3");
-      #@ips = sublist(split('\n', $3), 2);
-      #println(@ips);
-      #quit();
+      @output = split('\n', $3);
+      foreach $line (@output) {
+         if ($line hasmatch "IPv4") {
+            if ($line hasmatch "Address") {
+               $temp = substr(split(":", $line)[1], 1);
+               push(@ips, $temp);
+            }
+            if ($line hasmatch "Netmask") {
+               $temp = substr(split(":", $line)[1], 1);
+               push(@masks, $temp);
+            }
+         }
+      }
+            #@ips = sublist(split('\n', $3), 2);
+            #println(@ips);
+            #quit();
 
-      #println("second shell command");
-      #s_cmd(@info[0], "ifconfig | grep 'inet addr' | cut -d: -f4 | awk '{print \$1 }'");
-      #yield;
-      #@masks = sublist(split('\n', $3), 2);
-      #println(@masks);
+            #println("second shell command");
+            #s_cmd(@info[0], "ifconfig | grep 'inet addr' | cut -d: -f4 | awk '{print \$1 }'");
+            #yield;
+            #@masks = sublist(split('\n', $3), 2);
+            #println(@masks);
 
-      #@networks = addNetworks(@networks, @ips, @masks, @info);
-
+      %networks = addNetworks(%networks, @ips, @masks, @info[1]);
+      @ips = @();
+      @masks = @();
    }
-   println(@networks);
+
+   foreach $sid (%networks) {
+      foreach $temp (%networks[$sid]) {
+         println("$sid" . "," . "$temp");
+      }
+   }
+   cmd($console, "jobs -K");
    quit();
 }
 
 sub addNetworks {
-   local('@networks @ips @masks @session $i @subnet');
-   @networks = $1;
+   local('%networks @ips @masks $host $i $entry $ip');
+   %networks = $1;
    @ips = $2;
    @masks = $3;
-   @session = $4;
-
-   @subnet = split('.', @session[2]);
-   println(@subnet);
+   $host = $4;
 
    for ($i = 0; $i < size(@ips); $i += 1) {
-
+      if (@ips[$i] ne "127.0.0.1" || @ips[$i] ne $host) {
+        
+         if ($host in %networks) {}
+         else {
+            #println("added new host: $host");
+            %networks[$host] = @();
+         }
+         $ip = substr(@ips[$i], 0, lindexOf(@ips[$i], "."));
+         $entry = $ip . ".0," . @masks[$i];
+         push(%networks[$host], $entry);
+      }
    }
 
-
-   return @networks;
+   return %networks;
 }
