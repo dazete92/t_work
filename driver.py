@@ -17,11 +17,12 @@ def main():
    prop_file_gen = False if "-init" in sys.argv else True
 
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, severity) = user_input_handler.prompt_user(prop_file_gen) #, host_list)
+   (server_ip, server_passwd, ip_ranges, target_ip, severity) = \
+      user_input_handler.prompt_user(prop_file_gen) #, host_list)
 
    exploit_file_gen = 0
 
-   ## tool startup
+   ## service startup
    if len(sys.argv) > 1:
       for arg in sys.argv:
          if arg == "-init":
@@ -46,11 +47,7 @@ def main():
    #db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
 
-   print host_list
-
-
 #while True:
-
    ## service gathering
    #db_s = service_db_gen.generate_db(host_list)
    #service_db_gen.print_db(db_s)
@@ -72,16 +69,16 @@ def main():
    #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
    '''
-   ip_ranges
-   db_s_final
-   db_h_final
-   host_list_final
-   sessions_final
-   attacks_final
-   
-
    #scanning or leave
-   if True:
+   if len(new_networks) > 0:
+
+      ip_ranges_final = copyIPRanges(ip_ranges_final, ip_ranges)
+      db_h_final = copy.copyHosts(db_h_final, dh_h)
+      sessions_final = copy.copySesssions(sessions_final, session_db)
+      attacks_final = copy.copyAttacks(attacks_final, attacks)
+      hierarchy_final = copyHierarchy(hierarchy_final, hierarchy)
+
+      ip_ranges = new_networks
       temp_host_list = nmap_scan.scan(ip_ranges)
       host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
       host_list = temp_host_list.copy()
@@ -95,7 +92,8 @@ def main():
    exploit_db_gen.update_db(db_e, db_h, session_db)
 
    ## reporting module
-   #TODO
+
+   ## close all open sessions
 '''
 
 if __name__ == '__main__':
