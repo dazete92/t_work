@@ -1,9 +1,16 @@
 debug (7 | 24)
 
-on ready {
-	local('$console');
-	$console = console();
-	cmd($console, "services");
+command arguments {
+   local('@hosts $console $hosts $h');
+
+   $console = console();
+   @hosts = split(',', "$1");
+   
+   foreach $h (@hosts) {
+      $hosts = $hosts . $h . " "
+   }
+
+   cmd($console, "services $hosts");
 }
 
 on console_services {

@@ -26,7 +26,7 @@ def prompt_user(prop_file_gen):
    for i in range (0, len(input_list)):
       ip_ranges.append(input_list[i])
 
-   host_list = shared_util.parseIPRanges(ip_ranges)
+   #host_list = shared_util.parseIPRanges(ip_ranges)
       
    target_ip = "" #raw_input("\nIf desired, select a target machine: <target IP>: ")
 
@@ -35,6 +35,6 @@ def prompt_user(prop_file_gen):
 
    prop_file = ""
    if prop_file_gen is True:
-      #shared.prop_file_name = raw_input("\nPlease provide the name of the .prop file to be used to connect to the team server: ")
+      shared_util.prop_file_name = raw_input("\nPlease provide the name of the .prop file to be used to connect to the team server: ")
 
-   return (server_ip, server_passwd, ip_ranges, target_ip, severity, host_list)
+   return (server_ip, server_passwd, ip_ranges, target_ip, severity) #, host_list)

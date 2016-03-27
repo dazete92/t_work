@@ -65,12 +65,13 @@ on networkSearch {
          println("$sid" . "," . "$temp");
       }
    }
+   addPivots(%networks, @sessions);
    cmd($console, "jobs -K");
    quit();
 }
 
 sub addNetworks {
-   local('%networks @ips @masks $host $i $entry $ip');
+   local('%networks @ips @masks $host $i $entry');
    %networks = $1;
    @ips = $2;
    @masks = $3;
@@ -84,11 +85,14 @@ sub addNetworks {
             #println("added new host: $host");
             %networks[$host] = @();
          }
-         $ip = substr(@ips[$i], 0, lindexOf(@ips[$i], "."));
-         $entry = $ip . ".0," . @masks[$i];
+         $entry = @ips[i] . "," . @masks[$i];
          push(%networks[$host], $entry);
       }
    }
 
    return %networks;
+}
+
+sub addPivots {
+   
 }

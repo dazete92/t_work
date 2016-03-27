@@ -72,7 +72,7 @@ on getNewSessions {
          if (@info[2] eq $host && @info[1] eq "linux") {
             if ($sessionNum > @info[0]) {
                println("$host" . "," . "$sessionNum" . "," . "$user");
-               cmd($console, "sessions -k $close ");
+               session_close($sid);
             }
          }
       }

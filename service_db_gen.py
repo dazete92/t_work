@@ -35,13 +35,18 @@ def write_db_to_file(output):
    
       db_file.close()
 
-def generate_db():
+def generate_db(host_list):
 
    print "Generating service database"
    db = defaultdict()
+   string = ""
 
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'services.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-       
+
+   for host in host_list:
+      string += host + ","
+
+   p.stdin.write("arguments %s" % string);
    output = p.communicate()[0]
    
    for line in output.splitlines():

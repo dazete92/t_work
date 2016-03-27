@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import shared_util
+from collections import defaultdict
 
 def scan_location_setup():
 
@@ -47,7 +48,5 @@ def scan(ip_ranges):
    
    p.stdin.write("arguments %s" % ips)
    output = p.communicate()[0]
-   print output     
-      
    
-   
+   return shared_util.parseIPRanges(output.splitlines())

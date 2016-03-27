@@ -1,19 +1,26 @@
 debug (7 | 24)
 
-on ready {
-	local('$console $rand $file');
-	$console = console();
-	cmd($console, "hosts -c address,os_name");
+command arguments {
+   local('@hosts $console $hosts $h');
+
+   $console = console();
+   @hosts = split(',', "$1");
+   
+   foreach $h (@hosts) {
+      $hosts = $hosts . $h . " "
+   }
+
+   cmd($console, "hosts -c address,os_name $hosts");
 }
 
 on console_hosts {
-	local('$line $address $mac $name $os_name $os_flavor $os_sp $type $info $comments');
+	local('$line $address $os_name');
 
 	foreach $line (split("\n", $3)) {
 		if ($line ismatch '(\d+.\d+.\d+.\d+)\s+(.*?)') {
 			($address, $os_name) = matched();
 			println("$address" . "," . "$os_name");
-      	}
+      }
 	}
 	quit();
 }

@@ -9,6 +9,7 @@ import service_startup
 import nmap_scan
 import post_exploit
 import shared_util
+import copy
 
 def main():
 
@@ -16,7 +17,7 @@ def main():
    prop_file_gen = False if "-init" in sys.argv else True
 
    ## user prompt
-   (server_ip, server_passwd, ip_ranges, target_ip, severity, host_list) = user_input_handler.prompt_user(prop_file_gen)
+   (server_ip, server_passwd, ip_ranges, target_ip, severity) = user_input_handler.prompt_user(prop_file_gen) #, host_list)
 
    exploit_file_gen = 0
 
@@ -33,35 +34,61 @@ def main():
             user_input_handler.print_header()
             quit()
 
-   print "Prop file name: " + str(shared.prop_file_name)
-   
-   ## scanning module (nmap and nessus)
+   print "Prop file name: " + str(shared_util.prop_file_name)
+
    scan = nmap_scan.scan_location_setup()
    if scan == "y" or scan == "Y":
-      nmap_scan.scan(ip_ranges)
+      host_list = nmap_scan.scan(ip_ranges)
+   else:
+      host_list = shared_util.parseIPRanges(ip_ranges);
 
    ## exploit gathering
-   db_e = exploit_db_gen.determine_db(exploit_file_gen)
+   #db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
 
+   print host_list
+
+
+#while True:
+
    ## service gathering
-   db_s = service_db_gen.generate_db()
+   #db_s = service_db_gen.generate_db(host_list)
    #service_db_gen.print_db(db_s)
 
    ## host gathering
-   db_h = host_db_gen.generate_db()
+   #db_h = host_db_gen.generate_db(host_list)
    #host_db_gen.print_db(db_h)
 
    ## attack generation
-   attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
-   #atk_gen.print_attacks(attacks)
-   sessions = atk_gen.generate_attacks(attacks, db_h)
+   #attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
+   #sessions = atk_gen.generate_attacks(attacks)
 
    ## privilege escalation module (combine with pivoting)
+   #session_db = shared_util.parseSessionData(sessions)
+   #print session_db
 
-   session_db = post_exploit.parseSessionData(sessions)
-   print session_db
-   #post_exploit.searchForTarget(session_db, target_ip, target_location, attacks, db_e, db_h, db_s)
+   #copy ip_ranges
+
+   #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
+
+   '''
+   ip_ranges
+   db_s_final
+   db_h_final
+   host_list_final
+   sessions_final
+   attacks_final
+   
+
+   #scanning or leave
+   if True:
+      temp_host_list = nmap_scan.scan(ip_ranges)
+      host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
+      host_list = temp_host_list.copy()
+
+   else:
+      break
+   '''
 
 '''
    ## exploit db updater
@@ -70,5 +97,6 @@ def main():
    ## reporting module
    #TODO
 '''
+
 if __name__ == '__main__':
    main()

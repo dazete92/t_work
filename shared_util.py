@@ -27,6 +27,24 @@ def parseIPRanges(ip_ranges):
    for i in range(0, len(ip_ranges)):
       ip = IPNetwork(ip_ranges[i])
       for l in list(ip):
-         ips[l.__str__()] = []
+         ips[l.__str__()] = ""
 
    return ips
+
+def getCIDR(addr, mask):
+
+   ip = IPNetwork(str(addr) + "/" + str(mask))
+   return ip.__str__()
+
+def parseSessionData(sessions):
+
+   session_db = defaultdict()
+
+   for line in sessions.splitlines():
+      chars = line.split(',')    #host, success?, sessionNum, user, exploit
+      data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], \
+        'user': chars[3], 'exploit': chars[4], 'type': chars[5]}
+
+      session_db[chars[0]] = data
+
+   return session_db

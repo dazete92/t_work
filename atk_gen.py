@@ -39,7 +39,7 @@ def determineAttackVectors(db_e, db_s, db_h, host_list):
              
    return db
 
-def generate_attacks(attacks, db_h):
+def generate_attacks(attacks):
    
    print "Generating attack string"
 
@@ -51,8 +51,8 @@ def generate_attacks(attacks, db_h):
       rhost = host
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
-	      string += str(rhost) + "," + str(name) + "," + str(lhost) + ";"
-	      counter += 1
+         string += str(rhost) + "," + str(name) + "," + str(lhost) + ";"
+         counter += 1
 
    print "Launching attack string"         
    p.stdin.write("arguments %s %s" % (str(counter), string))
