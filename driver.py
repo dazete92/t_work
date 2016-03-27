@@ -72,6 +72,7 @@ def main():
    #scanning or leave
    if len(new_networks) > 0:
 
+      # copy services db
       ip_ranges_final = copyIPRanges(ip_ranges_final, ip_ranges)
       db_h_final = copy.copyHosts(db_h_final, dh_h)
       sessions_final = copy.copySesssions(sessions_final, session_db)
@@ -89,11 +90,12 @@ def main():
 
 '''
    ## exploit db updater
-   exploit_db_gen.update_db(db_e, db_h, session_db)
+   exploit_db_gen.update_db(db_e_, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
 
    ## close all open sessions
+   post_exploit.closeSessions(sessions_final)
 '''
 
 if __name__ == '__main__':

