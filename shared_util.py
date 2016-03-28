@@ -1,7 +1,6 @@
 import sys
 import os
 import pprint
-import shared_util
 from collections import defaultdict
 from netaddr import IPNetwork, IPAddress, IPRange
 
@@ -27,14 +26,9 @@ def parseIPRanges(ip_ranges):
    for i in range(0, len(ip_ranges)):
       ip = IPNetwork(ip_ranges[i])
       for l in list(ip):
-         ips[l.__str__()] = ""
+         ips[l.__str__()] = "root"
 
    return ips
-
-def getCIDR(addr, mask):
-
-   ip = IPNetwork(str(addr) + "/" + str(mask))
-   return ip.__str__()
 
 def parseSessionData(sessions):
 

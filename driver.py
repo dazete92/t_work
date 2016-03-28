@@ -65,8 +65,6 @@ def main():
    #session_db = shared_util.parseSessionData(sessions)
    #print session_db
 
-   #copy ip_ranges
-
    #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
    '''
@@ -90,11 +88,15 @@ def main():
    '''
 
 '''
+   ## find target
+   host_list_final = post_exploit.findTarget(host_list_final, target_ip)
+
    ## exploit db updater
    exploit_db_gen.update_db(db_e_, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
-   report.generateReport()
+   report.generateReport(host_list_final, db_h_final, attacks_final, /
+      sessions_final, hierarchy_final)
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)
