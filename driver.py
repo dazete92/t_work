@@ -10,6 +10,7 @@ import nmap_scan
 import post_exploit
 import shared_util
 import copy
+import report
 
 def main():
 
@@ -93,6 +94,7 @@ def main():
    exploit_db_gen.update_db(db_e_, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
+   report.generateReport()
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)
