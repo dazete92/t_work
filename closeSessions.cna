@@ -1,0 +1,20 @@
+debug(7);
+
+command arguments {
+   local('@sessions');
+   @sessions = split(';', $1);
+   fire_event_local("closeSessions", @sessions);
+}
+
+on closeSessions {
+   local('@sessions $session');
+   @sessions = $1;
+
+   on("session_close", $this);
+
+   foreach $session (@sessions) {
+      session_close($session);
+      yield;
+   }
+   quit();
+}
