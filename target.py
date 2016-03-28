@@ -7,7 +7,7 @@ def determineOrdinalNumber(num):
       return str(num) + "th"
    return str(num) + {1: "st", 2: "nd", 3: "rd"}.get(num % 10, "th")
 
-def findTarget(host_list_final, target_ip):
+def getTargetTree(host_list_final, target_ip):
 
    targetTree = defaultdict()
    treeRoot = target_ip
@@ -26,7 +26,7 @@ def findTarget(host_list_final, target_ip):
 
          (targetTree, children, flag) = findImmediateChildren(host_list_final, children, targetTree)
 
-         print "\nchildren: " + str(children)
+         #print "\nchildren: " + str(children)
 
          if flag:
             del host_list_final[treeRoot]
@@ -34,10 +34,8 @@ def findTarget(host_list_final, target_ip):
          for child in children:
             del host_list_final[child]
 
-         print "\nhost_list: " + str(host_list_final)
-         print "\ntargetTree: " + str(targetTree) + "\n"
-   else:
-      print "Target Not Found"
+         #print "\nhost_list: " + str(host_list_final)
+         #print "\ntargetTree: " + str(targetTree) + "\n"
 
    return targetTree
 
@@ -49,7 +47,7 @@ def findImmediateChildren(host_list_final, children, targetTree):
    for child in children:
       subnet = child[:child.rfind('.') + 1]
       for key in host_list_final:
-         print child, key, key.find(subnet), host_list_final[key]
+         #print child, key, key.find(subnet), host_list_final[key]
          if key == child:
             #print "if"
             flag = True
@@ -70,7 +68,7 @@ def main():
       '172.16.221.155': '172.16.222.135', '5.6.7.8': '172.16.221.155', \
       '172.16.221.154': '172.16.222.135', '0.0.0.0': '172.16.222.132'}
    target_ip = "172.16.221.155"
-   tree = findTarget(temp, target_ip)
+   tree = getTargetTree(temp, target_ip)
    printTree(tree, target_ip)
 
 main()

@@ -11,6 +11,7 @@ import post_exploit
 import shared_util
 import copy
 import report
+import target
 
 def main():
 
@@ -95,8 +96,9 @@ def main():
    exploit_db_gen.update_db(db_e_, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
+   targetTree = target.getTargetTree(host_list_final, target_ip)
    report.generateReport(host_list_final, db_h_final, attacks_final, /
-      sessions_final, hierarchy_final)
+      sessions_final, hierarchy_final, targetTree)
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)

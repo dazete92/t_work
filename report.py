@@ -1,6 +1,7 @@
 import shared_util
 
-def generateReport():
+def generateReport(host_list_final, db_h_final, attacks_final, /
+      sessions_final, hierarchy_final, targetTree):
 
 def printTree(tree, target_ip):
 
