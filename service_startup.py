@@ -15,12 +15,14 @@ def init(ip, passwd):
    time.sleep(45)
 
    print "Creating .prop file..."
-   prop_file = open(".connect.prop", "w")
+   prop_file = open("__connect.prop", "w")
    prop_file.write("host=" + str(ip) + "\n")
    prop_file.write("port=55553\n")
    prop_file.write("user=cortana\n")
    prop_file.write("passwd=" + str(passwd) + "\n")
    prop_file.close()
+
+   print "Created __connect.prop"
    
 def update():
    print "Updating Metasploit..."

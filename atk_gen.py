@@ -9,6 +9,7 @@ from collections import defaultdict
 def print_attacks(attacks):
    
    for host in attacks:
+      print host
       for attack in range(len(attacks[host])):
          print attacks[host][attack]['name'], attacks[host][attack]['modRank']
 
@@ -27,12 +28,13 @@ def determineAttackVectors(db_e, db_s, db_h, host_list):
             if service['state'] == "open" or service['state'] == "unknown":
                if service['port'] in db_e:
                   for exploit in range(len(db_e[service['port']])):
-                     if db_e[service['port']][exploit]['os'] == db_h[host]['os_name']:
-                        db[host].append(db_e[service['port']][exploit])
-                     if db_h[host]['os_name'] == "linux" and db_e[service['port']][exploit]['os'] == "unix":
-                        db[host].append(db_e[service['port']][exploit])
-                     if db_e[service['port']][exploit]['os'] == "multi":
-                        db[host].append(db_e[service['port']][exploit])
+                     if db_e[service['port']][exploit]['modRank'] >= 4.0:
+                        if db_e[service['port']][exploit]['os'] == db_h[host]['os_name']:
+                           db[host].append(db_e[service['port']][exploit])
+                        if db_h[host]['os_name'] == "linux" and db_e[service['port']][exploit]['os'] == "unix":
+                           db[host].append(db_e[service['port']][exploit])
+                        if db_e[service['port']][exploit]['os'] == "multi":
+                           db[host].append(db_e[service['port']][exploit])
    
    for host in host_list:
       db[host] = sorted(db[host], key=itemgetter('rankNum'), reverse=True)
@@ -46,7 +48,7 @@ def generate_attacks(attacks):
    lhost = "172.16.222.1"
    string = ""
    counter = 0
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks_copy.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
    for host in attacks:
       rhost = host
       for attack in range(len(attacks[host])):
@@ -59,5 +61,6 @@ def generate_attacks(attacks):
    output = p.communicate()[0]
    p.stdin.close();
    
+   print output
    return output
       

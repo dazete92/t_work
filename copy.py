@@ -62,8 +62,8 @@ def copyIPRanges(ip_ranges_final, ip_ranges):
    return ip_ranges_final
 
 
-def main():
-   
+#def main():
+   '''
    host_list_final = defaultdict()
    host_list = {'172.16.222.132': "root", '172.16.222.133' : "root", '172.16.222.135': "root"}
    temp = {'172.16.221.154': "root", '172.16.221.155': "root", '0.0.0.0': "root"}
@@ -76,7 +76,7 @@ def main():
    hierarchy = {'172.16.221.154': ["1.2.3.0/24", "9.9.9.9/24"], '172.16.221.155': ["5.6.7.0/24"]}
    host_list_final = copyHostList(host_list_final, host_list, temp, hierarchy)
    print host_list_final
-   
+   '''
 
    '''
    db_h_final = defaultdict()
@@ -145,4 +145,4 @@ def main():
    print ip_ranges_final
    '''
 
-main()
+#main()

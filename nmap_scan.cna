@@ -1,9 +1,5 @@
 debug(7);
 
-on ready {
-   println("ready");
-}
-
 command arguments {
    local('@ips');
 
@@ -17,7 +13,7 @@ on launch_scan {
    $console = console();
    
    foreach $ip ($1) {
-      $ips = $ips . $ip . " "
+      $ips = $ips . $ip . " ";
    }
    #println($ips);
 
@@ -26,7 +22,8 @@ on launch_scan {
 
 on console_db_nmap {
    local('$console @hosts $host');
-   hosts = host_addresses();
+   sleep(3000);
+   @hosts = host_addresses();
    foreach $host (@hosts) {
       println("$host");
    }

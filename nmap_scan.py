@@ -8,8 +8,10 @@ def scan_location_setup():
    command = ""
 
    print "\nDetermine destination of scan data or previous scan data\n"
-      
-   while False: #True:
+   
+   print "Prop file name: " + str(shared_util.prop_file_name)
+
+   while True:
       print "Workspaces (* = current):"
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'workspace.cna'], stdin=subprocess.PIPE)
       p.stdin.write("arguments %s" % "list")
@@ -32,8 +34,8 @@ def scan_location_setup():
       p.communicate()
       p.stdin.close()
 
-   #scan = raw_input("Perform scan on selected IPs? (y/n): ")
-   return "n" #scan
+   scan = raw_input("Perform scan on selected IPs? (y/n): ")
+   return scan
    
 def scan(ip_ranges):
    

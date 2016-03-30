@@ -12,6 +12,7 @@ import shared_util
 import copy
 import report
 import target
+from collections import defaultdict
 
 def main():
 
@@ -46,47 +47,49 @@ def main():
       host_list = shared_util.parseIPRanges(ip_ranges);
 
    ## exploit gathering
-   #db_e = exploit_db_gen.determine_db(exploit_file_gen)
+   db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
 
-#while True:
-   ## service gathering
-   #db_s = service_db_gen.generate_db(host_list)
-   #service_db_gen.print_db(db_s)
+   while True:
+      ## service gathering
+      db_s = service_db_gen.generate_db(host_list)
+      #service_db_gen.print_db(db_s)
 
-   ## host gathering
-   #db_h = host_db_gen.generate_db(host_list)
-   #host_db_gen.print_db(db_h)
+      ## host gathering
+      db_h = host_db_gen.generate_db(host_list)
+      #host_db_gen.print_db(db_h)
 
-   ## attack generation
-   #attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
-   #sessions = atk_gen.generate_attacks(attacks)
+      ## attack generation
+      attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
+      atk_gen.print_attacks(attacks)
+      sessions = atk_gen.generate_attacks(attacks)
 
-   ## privilege escalation module (combine with pivoting)
-   #session_db = shared_util.parseSessionData(sessions)
-   #print session_db
+      ## privilege escalation module (combine with pivoting)
+      session_db = shared_util.parseSessionData(sessions)
+      print session_db
 
-   #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
+      #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
-   '''
-   #scanning or leave
-   if len(new_networks) > 0:
+      '''
+      #scanning or leave
+      if len(new_networks) > 0:
 
-      # copy services db
-      ip_ranges_final = copyIPRanges(ip_ranges_final, ip_ranges)
-      db_h_final = copy.copyHosts(db_h_final, dh_h)
-      sessions_final = copy.copySesssions(sessions_final, session_db)
-      attacks_final = copy.copyAttacks(attacks_final, attacks)
-      hierarchy_final = copyHierarchy(hierarchy_final, hierarchy)
+         # copy services db
+         ip_ranges_final = copyIPRanges(ip_ranges_final, ip_ranges)
+         db_h_final = copy.copyHosts(db_h_final, dh_h)
+         sessions_final = copy.copySesssions(sessions_final, session_db)
+         attacks_final = copy.copyAttacks(attacks_final, attacks)
+         hierarchy_final = copyHierarchy(hierarchy_final, hierarchy)
 
-      ip_ranges = new_networks
-      temp_host_list = nmap_scan.scan(ip_ranges)
-      host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
-      host_list = temp_host_list.copy()
+         ip_ranges = new_networks
+         temp_host_list = nmap_scan.scan(ip_ranges)
+         host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
+         host_list = temp_host_list.copy()
 
-   else:
+      else:
+         break
+      '''
       break
-   '''
 
 '''
    ## find target

