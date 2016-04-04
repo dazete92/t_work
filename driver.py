@@ -21,7 +21,7 @@ def main():
 
    ## user prompt
    (server_ip, server_passwd, ip_ranges, target_ip, severity) = \
-      user_input_handler.prompt_user(prop_file_gen) #, host_list)
+      user_input_handler.prompt_user(prop_file_gen)
 
    exploit_file_gen = 0
 
@@ -60,13 +60,13 @@ def main():
       #host_db_gen.print_db(db_h)
 
       ## attack generation
-      attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list)
+      attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
       atk_gen.print_attacks(attacks)
-      sessions = atk_gen.generate_attacks(attacks)
+      #sessions = atk_gen.generate_attacks(attacks)
 
       ## privilege escalation module (combine with pivoting)
-      session_db = shared_util.parseSessionData(sessions)
-      print session_db
+      #session_db = shared_util.parseSessionData(sessions)
+      #print session_db
 
       #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
@@ -96,7 +96,7 @@ def main():
    host_list_final = post_exploit.findTarget(host_list_final, target_ip)
 
    ## exploit db updater
-   exploit_db_gen.update_db(db_e_, db_h_final, sessions_final, attacks_final)
+   exploit_db_gen.update_db(db_e, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
    targetTree = target.getTargetTree(host_list_final, target_ip)

@@ -11,10 +11,10 @@ def print_attacks(attacks):
    for host in attacks:
       print host
       for attack in range(len(attacks[host])):
-         print attacks[host][attack]['name'], attacks[host][attack]['modRank']
+         print attacks[host][attack]
 
            
-def determineAttackVectors(db_e, db_s, db_h, host_list):
+def determineAttackVectors(db_e, db_s, db_h, host_list, severity):
    # figures out attack vectors based on hosts and services
    print "Creating Attack Vectors"
 
@@ -28,7 +28,7 @@ def determineAttackVectors(db_e, db_s, db_h, host_list):
             if service['state'] == "open" or service['state'] == "unknown":
                if service['port'] in db_e:
                   for exploit in range(len(db_e[service['port']])):
-                     if db_e[service['port']][exploit]['modRank'] >= 4.0:
+                     if db_e[service['port']][exploit]['modRank'] >= severity:
                         if db_e[service['port']][exploit]['os'] == db_h[host]['os_name']:
                            db[host].append(db_e[service['port']][exploit])
                         if db_h[host]['os_name'] == "linux" and db_e[service['port']][exploit]['os'] == "unix":
@@ -37,7 +37,7 @@ def determineAttackVectors(db_e, db_s, db_h, host_list):
                            db[host].append(db_e[service['port']][exploit])
    
    for host in host_list:
-      db[host] = sorted(db[host], key=itemgetter('rankNum'), reverse=True)
+      db[host] = sorted(db[host], key=itemgetter('modRank'), reverse=True)
              
    return db
 

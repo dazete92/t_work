@@ -10,16 +10,16 @@ command arguments {
       $hosts = $hosts . $h . " "
    }
 
-   cmd($console, "hosts -c address,os_name $hosts");
+   cmd($console, "hosts -c address,os_name,os_sp $hosts");
 }
 
 on console_hosts {
-	local('$line $address $os_name');
+	local('$line $address $os_name $os_sp');
 
 	foreach $line (split("\n", $3)) {
-		if ($line ismatch '(\d+.\d+.\d+.\d+)\s+(.*?)') {
-			($address, $os_name) = matched();
-			println("$address" . "," . "$os_name");
+		if ($line ismatch '(\d+.\d+.\d+.\d+)\s+(.*?)\s+(.*?)') {
+			($address, $os_name, $os_sp) = matched();
+			println("$address" . "," . "$os_name" . "," . "$os_sp");
       }
 	}
 	quit();

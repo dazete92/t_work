@@ -92,7 +92,7 @@ sub determinePayload {
 }
 
 on sessionHandle {
-   local('$console %out @ids $flag $sessionNum $host $user %r $exploit $type @hosts');
+   local('$console %out @ids $flag $sessionNum $host $user %r $exploit $type @hosts $port');
    
    @ids = session_ids();
    %out = sessions();
@@ -108,12 +108,13 @@ on sessionHandle {
    	$user = %r["username"];
    	$exploit = split('/', %r["via_exploit"], 2)[1];
       $type = %r["type"];
+      $port = %r["session_port"];
 
       if ($host in @hosts) {
          remove(@hosts, $host);
       }
 
-   	println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit" . "," . "$type");
+   	println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit" . "," . "$type" . "," . "$port");
    }
 
    fire_event_local("noSessions", @hosts);
@@ -124,7 +125,7 @@ on noSessions {
    @hosts = $1;
 
    foreach $host (@hosts) {
-      println("$host" . ",false,0,0,0,0");
+      println("$host" . ",false,0,0,0,0,0");
    }
    quit();
 }

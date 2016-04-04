@@ -6,11 +6,9 @@ from subprocess import Popen, PIPE, STDOUT
 from collections import defaultdict
 
 def parseData(chars):
-   # chars format = host IP address, MAC address, host name, os name, os flavor, os version, host type, info, comments
 
    os_name = chars[1].split(' ')
-
-   return (chars[0], os_name[0].lower())
+   return (chars[0], os_name[0].lower(), chars[2])
       
 def print_db(db):
    # prints hosts database contents
@@ -53,10 +51,10 @@ def generate_db(host_list):
    
    for line in output.splitlines():
       chars = line.split(',')
-      (ip, os_name) = parseData(chars)
+      (ip, os_name, os_version) = parseData(chars)
 
       # creates dictionary of information for each host
-      data = {'ip': ip, 'os_name': os_name}
+      data = {'ip': ip, 'os_name': os_name, 'os_version': os_version}
       
       # creates a searchable database of hosts, organized by ip address
       if ip not in db:
