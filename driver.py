@@ -61,12 +61,12 @@ def main():
 
       ## attack generation
       attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
-      atk_gen.print_attacks(attacks)
-      #sessions = atk_gen.generate_attacks(attacks)
+      #atk_gen.print_attacks(attacks)
+      sessions = atk_gen.generate_attacks(attacks)
 
       ## privilege escalation module (combine with pivoting)
-      #session_db = shared_util.parseSessionData(sessions)
-      #print session_db
+      session_db = shared_util.parseSessionData(sessions)
+      print session_db
 
       #(session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
