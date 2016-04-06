@@ -68,7 +68,7 @@ def main():
       #session_db = shared_util.parseSessionData(sessions)
       #print session_db
 
-      #(session_db, new_networks, hierarchy) = post_exploit.searchForTarget(session_db, db_h, host_list)
+      #(session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
       '''
       #scanning or leave
@@ -80,6 +80,7 @@ def main():
          sessions_final = copy.copySesssions(sessions_final, session_db)
          attacks_final = copy.copyAttacks(attacks_final, attacks)
          hierarchy_final = copyHierarchy(hierarchy_final, hierarchy)
+         alteredSessions_final = copyAlteredSessions(alteredSessions_final, alteredSessions)
 
          ip_ranges = new_networks
          temp_host_list = nmap_scan.scan(ip_ranges)

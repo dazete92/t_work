@@ -61,6 +61,11 @@ def copyIPRanges(ip_ranges_final, ip_ranges):
    ip_ranges_final.extend(ip_ranges)
    return ip_ranges_final
 
+def copyAlteredSessions(altered_final, altered):
+
+   altered_final.extend(altered)
+   return altered_final
+
 
 #def main():
    '''
