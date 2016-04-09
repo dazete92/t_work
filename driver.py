@@ -50,6 +50,8 @@ def main():
    db_e = exploit_db_gen.determine_db(exploit_file_gen)
    #exploit_db_gen.print_db(db_e)
 
+   user_input_ranges = ip_ranges
+
    while True:
       ## service gathering
       db_s = service_db_gen.generate_db(host_list)
@@ -101,8 +103,9 @@ def main():
 
    ## reporting module
    targetTree = target.getTargetTree(host_list_final, target_ip)
-   report.generateReport(host_list_final, db_h_final, attacks_final, /
-      sessions_final, hierarchy_final, targetTree)
+   report.generateReport(ip_ranges_final, host_list_final, db_h_final, attacks_final, /
+      sessions_final, hierarchy_final, alteredSessions_final, targetTree, user_input_ranges,
+      target_ip, severity, db_e)
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)

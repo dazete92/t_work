@@ -28,10 +28,13 @@ def prompt_user(prop_file_gen):
       
    target_ip = "" #raw_input("\nIf desired, select a target machine: <target IP>: ")
 
-   #print "Enter an exploit ranking threshold (default = 4): "
-   #severity = raw_input("(6 = Excellent, 5 = Great, 4 = Good, 3 = Average, 2 = Low): ")
+   #shared_util.printRankingThresholds()
+   #severity = raw_input("Enter an exploit ranking threshold (default = 4): ")
    #if (severity == ""):
       #severity = 4
    severity = 4
+   '''
+   add severity metrics from wiki page
+   '''
 
    return (server_ip, server_passwd, ip_ranges, target_ip, severity)

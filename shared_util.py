@@ -36,8 +36,16 @@ def parseSessionData(sessions):
 
    for line in sessions.splitlines():
       chars = line.split(',')
-      data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], 'user': chars[3], 'exploit': chars[4], 'type': chars[5], 'port': chars[6]}
+      data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], \
+         'user': chars[3], 'exploit': chars[4], 'type': chars[5], 'port': chars[6]}
 
       session_db[chars[0]] = data
 
    return session_db
+
+def generateRandomNumber():
+
+   return 0
+
+def printRankingThresholds():
+   print "Hello"

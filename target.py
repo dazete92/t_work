@@ -19,7 +19,7 @@ def getTargetTree(host_list_final, target_ip):
          children.append(key)
          break
 
-   print children
+   #print children
 
    if len(children) != 0:
       while len(children) > 0 and len(host_list_final) > 0:
