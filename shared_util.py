@@ -6,7 +6,7 @@ from netaddr import IPNetwork, IPAddress, IPRange
 
 def defineGlobals():
    global prop_file_name
-   prop_file_name = "vm.prop"
+   prop_file_name = "__connect.prop"
 
 def isTargetInRange(ip_ranges, target_ip):
 
