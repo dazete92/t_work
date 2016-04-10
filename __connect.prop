@@ -1,4 +1,4 @@
 host=172.16.222.1
 port=55553
-user=cortana
-passwd=pass
+user=msf
+pass=pass

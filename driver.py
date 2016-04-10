@@ -70,7 +70,7 @@ def main():
       session_db = shared_util.parseSessionData(sessions)
       print session_db
 
-      #(session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
+      (session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
       '''
       #scanning or leave

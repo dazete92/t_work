@@ -6,11 +6,14 @@ def generateReport(ip_ranges, host_list, db_h, attacks, sessions, hierarchy,
    printUserInformation(user_ranges, target_ip, severity)
    
    printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy)
-   if target_ip in sessions:
-      print "TARGET WAS COMPROMISED:"
-      printTree(targetTree, target_ip)
+   if target_ip is not "":
+      if target_ip in sessions:
+         print "TARGET WAS COMPROMISED:"
+         printTree(targetTree, target_ip)
+      else:
+         print "TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND"
    else:
-      print 'TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND"
+      print "TARGET WAS NOT SPECIFIED"
 
 def printTree(tree, target_ip):
 
@@ -57,7 +60,7 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy):
       print "  VERSION: " + host['os_sp']
       print "  COMPROMISED: " + "Yes" if compromised == True else "No"
       if compromised == True:
-         exploit = findExploit(host['ip'], sessions db_e)
+         exploit = findExploit(host['ip'], sessions, db_e)
          print "  EXPLOIT:"
          print "     NAME: " + str(exploit['name'])
          print "     DESCRIPTION: " + str(exploit['des'])

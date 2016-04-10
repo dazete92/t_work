@@ -79,7 +79,7 @@ on getNewSessions {
       $type = %r["type"];
       $user = %r["username"];
 
-      println("$host $type $user")
+      #println("$host $type $user")
 
       foreach $session ($1) {
          @info = split(',', $session);

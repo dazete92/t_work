@@ -18,8 +18,8 @@ def init(ip, passwd):
    prop_file = open(shared_util.prop_file_name, "w")
    prop_file.write("host=" + str(ip) + "\n")
    prop_file.write("port=55553\n")
-   prop_file.write("user=cortana\n")
-   prop_file.write("passwd=" + str(passwd) + "\n")
+   prop_file.write("user=msf\n")
+   prop_file.write("pass=" + str(passwd))
    prop_file.close()
 
    print "Created " + str(shared_util.prop_file_name)
