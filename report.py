@@ -1,6 +1,6 @@
 import shared_util
 
-def generateReport(ip_ranges, host_list, db_h, attacks, sessions, hierarchy, 
+def generateReport(ip_ranges, host_list, db_h, sessions, hierarchy, 
    alteredSessions, targetTree, user_ranges, target_ip, severity, db_e):
 
    printUserInformation(user_ranges, target_ip, severity)
@@ -44,36 +44,37 @@ def printUserInformation(user_ranges, target_ip, severity):
 
    print "-----Provided IP Address and/or ranges-----"
    for i in range (0, len(user_ranges)):
-      print ip_ranges[i]
+      print user_ranges[i]
 
    print "Target IP Address: " + str(target_ip)
-   print "Exploit Ranking Threshold: " + str(severity) + str(getSeverity(severity))
-   printDivider()
+   print "Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")"
 
 def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy):
 
-   print "-----Discovered Machines-----"
-   for host in db_h:
-      print host['ip']
+   print "-----Discovered Machines-------------------"
+   for h in db_h:
+      host = db_h[h]
+      print "HOST: " + host['ip']
       compromised = host['ip'] in sessions
       print "  OS: " + host['os_name']
-      print "  VERSION: " + host['os_sp']
+      print "  VERSION: " + host['os_version']
       print "  COMPROMISED: " + "Yes" if compromised == True else "No"
       if compromised == True:
          exploit = findExploit(host['ip'], sessions, db_e)
          print "  EXPLOIT:"
          print "     NAME: " + str(exploit['name'])
-         print "     DESCRIPTION: " + str(exploit['des'])
+         print "     DESCRIPTION: " + str(exploit['des'][:len(exploit['des']) - 1])
          print "     OS: " + str(exploit['os'])
-         print "     EXPLOIT RANK: " + str(exploit['rank']) + "(" + str(exploit['rankNum']) + ")"
-         if host in hierarchy:
+         print "     EXPLOIT RANK: " + str(exploit['rank']) + " (" + str(exploit['rankNum']) + ")"
+         if host['ip'] in hierarchy:
             print "  NETWORKS FOUND POST-EXPLOITATION:"
-            for network in hierarchy[host]:
+            for network in hierarchy[host['ip']]:
                print "     " + str(network)
    printDivider()
 
 def findExploit(ip, sessions, db_e):
    
+   #print sessions
    port = sessions[ip]['port']
    exploit = sessions[ip]['exploit']
 

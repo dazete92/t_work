@@ -85,7 +85,7 @@ sub addNetworks {
             #println("added new host: $host");
             %networks[$host] = @();
          }
-         $entry = @ips[i] . "," . @masks[$i];
+         $entry = @ips[$i] . "," . @masks[$i];
          push(%networks[$host], $entry);
       }
    }

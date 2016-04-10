@@ -16,6 +16,14 @@ from collections import defaultdict
 
 def main():
 
+   ip_ranges_final = []
+   db_h_final = defaultdict()
+   sessions_final = defaultdict()
+   attacks_final = defaultdict()
+   hierarchy_final = defaultdict()
+   host_list_final = defaultdict()
+   alteredSessions_final = []
+
    shared_util.defineGlobals()
    prop_file_gen = False if "-init" in sys.argv else True
 
@@ -68,48 +76,41 @@ def main():
 
       ## privilege escalation module (combine with pivoting)
       session_db = shared_util.parseSessionData(sessions)
-      print session_db
+      #print session_db
 
       (session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
-      '''
-      #scanning or leave
+      #copy data into final structures
+      ip_ranges_final = copy.copyIPRanges(ip_ranges_final, ip_ranges)
+      db_h_final = copy.copyHosts(db_h_final, db_h)
+      sessions_final = copy.copySessions(sessions_final, session_db)
+      attacks_final = copy.copyAttacks(attacks_final, attacks)
+      hierarchy_final = copy.copyHierarchy(hierarchy_final, hierarchy)
+      alteredSessions_final = copy.copyAlteredSessions(alteredSessions_final, alteredSessions)
+
+      # conduct new scan or quit
       if len(new_networks) > 0:
-
-         # copy services db
-         ip_ranges_final = copyIPRanges(ip_ranges_final, ip_ranges)
-         db_h_final = copy.copyHosts(db_h_final, dh_h)
-         sessions_final = copy.copySesssions(sessions_final, session_db)
-         attacks_final = copy.copyAttacks(attacks_final, attacks)
-         hierarchy_final = copyHierarchy(hierarchy_final, hierarchy)
-         alteredSessions_final = copyAlteredSessions(alteredSessions_final, alteredSessions)
-
          ip_ranges = new_networks
          temp_host_list = nmap_scan.scan(ip_ranges)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
          host_list = temp_host_list.copy()
 
       else:
+         host_list_final = copy.copyHostList(host_list_final, host_list, [], hierarchy)
          break
-      '''
-      break
-
-'''
-   ## find target
-   host_list_final = post_exploit.findTarget(host_list_final, target_ip)
 
    ## exploit db updater
    exploit_db_gen.update_db(db_e, db_h_final, sessions_final, attacks_final)
 
    ## reporting module
    targetTree = target.getTargetTree(host_list_final, target_ip)
-   report.generateReport(ip_ranges_final, host_list_final, db_h_final, attacks_final, /
-      sessions_final, hierarchy_final, alteredSessions_final, targetTree, user_input_ranges,
+   report.generateReport(ip_ranges_final, host_list_final, db_h_final, sessions_final,
+      hierarchy_final, alteredSessions_final, targetTree, user_input_ranges,
       target_ip, severity, db_e)
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)
-'''
+   print "Done"
 
 if __name__ == '__main__':
    main()

@@ -61,6 +61,6 @@ def generate_attacks(attacks):
    output = p.communicate()[0]
    p.stdin.close();
    
-   print output
+   #print output
    return output
       

@@ -1,4 +1,4 @@
-debug(7);1655 Dalidio Dr
+debug(7);
 
 command arguments {
    local('@sessions');
@@ -16,5 +16,6 @@ on closeSessions {
       session_close($session);
       yield;
    }
+   sleep(3000);
    quit();
 }
