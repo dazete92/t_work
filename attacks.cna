@@ -38,7 +38,6 @@ on prep_attacks {
    #quit();
 }
 
-
 on launch_attacks {
    local('$attack @attacks $exploit $rhost $lhost $i $os $console $name $payload @hosts $numSessions');
 
@@ -72,7 +71,7 @@ on launch_attacks {
 
          cmd($console, "exploit -j");
       
-         sleep(5000);
+         sleep(10000);
          cmd($console, "jobs -K");
          if (size(sessions()) > $numSessions) {
             $numSessions = size(sessions());

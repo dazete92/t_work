@@ -17,7 +17,7 @@ on launch_scan {
    }
    #println($ips);
 
-   cmd($console, "db_nmap --min-hostgroup 96 -sS -n -sU -T4 -A -v -n -F -O --osscan-limit --osscan-guess $ips");
+   cmd($console, "db_nmap --min-hostgroup 96 -sS -sU -n -T4 -A -v -sV -n -F -O --osscan-limit --osscan-guess --version-light $ips");
 }
 
 on console_db_nmap {

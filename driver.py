@@ -17,12 +17,13 @@ from collections import defaultdict
 def main():
 
    ip_ranges_final = []
+   alteredSessions_final = []
    db_h_final = defaultdict()
    sessions_final = defaultdict()
    attacks_final = defaultdict()
    hierarchy_final = defaultdict()
    host_list_final = defaultdict()
-   alteredSessions_final = []
+   db_s_final = defaultdict()
 
    shared_util.defineGlobals()
    prop_file_gen = False if "-init" in sys.argv else True
@@ -76,7 +77,7 @@ def main():
 
       ## privilege escalation module (combine with pivoting)
       session_db = shared_util.parseSessionData(sessions)
-      #print session_db
+      print session_db
 
       (session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
@@ -87,6 +88,7 @@ def main():
       attacks_final = copy.copyAttacks(attacks_final, attacks)
       hierarchy_final = copy.copyHierarchy(hierarchy_final, hierarchy)
       alteredSessions_final = copy.copyAlteredSessions(alteredSessions_final, alteredSessions)
+      #db_s_final = copyServices(db_s_final, db_s)
 
       # conduct new scan or quit
       if len(new_networks) > 0:
@@ -94,7 +96,6 @@ def main():
          temp_host_list = nmap_scan.scan(ip_ranges)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
          host_list = temp_host_list.copy()
-
       else:
          host_list_final = copy.copyHostList(host_list_final, host_list, [], hierarchy)
          break
@@ -106,7 +107,7 @@ def main():
    targetTree = target.getTargetTree(host_list_final, target_ip)
    report.generateReport(ip_ranges_final, host_list_final, db_h_final, sessions_final,
       hierarchy_final, alteredSessions_final, targetTree, user_input_ranges,
-      target_ip, severity, db_e)
+      target_ip, severity, db_e) #db_s_final
 
    ## close all open sessions
    post_exploit.closeSessions(sessions_final)
