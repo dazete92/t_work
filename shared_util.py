@@ -6,7 +6,7 @@ from netaddr import IPNetwork, IPAddress, IPRange
 
 def defineGlobals():
    global prop_file_name
-   prop_file_name = "__connect.prop"
+   prop_file_name = "vm.prop"
 
 def isTargetInRange(ip_ranges, target_ip):
 
@@ -49,4 +49,10 @@ def generateRandomNumber():
    return 0
 
 def printRankingThresholds():
-   print "Hello"
+   
+   print "Ranking Thresholds:"
+   print "Excellent (6): Exploit will not crash the service."
+   print "Great (5): Exploit auto-detects appropriate target operating system."
+   print "Good (4): Exploit has a default target operating system."
+   print "Normal (3): Exploit is reliable, but depends on specific OS."
+   print "Average (2): Exploit is generally unreliable"

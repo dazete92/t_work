@@ -17,12 +17,12 @@ def prompt_user(prop_file_gen):
    #print "\nPlease provide credentials to start or connect to an existing teamserver"
    #server_params = raw_input("<host IP> <server password>: ")
    #server_list = server_params.split(' ')
-   server_ip = "172.16.221.1" #server_list[0]
+   server_ip = "172.16.222.1" #server_list[0]
    server_passwd = "pass" #server_list[1]
 
    #print "\nPlease provide the IP ranges of the machines to be scanned in CIDR format: "
    #input_params = raw_input("<ipRange1> <ipRange2> ...: ") 
-   input_list = "172.16.221.132/31".split(' ') #input_params.split(' ')
+   input_list = "172.16.222.128".split(' ') #input_params.split(' ')
    for i in range (0, len(input_list)):
       ip_ranges.append(input_list[i])
       

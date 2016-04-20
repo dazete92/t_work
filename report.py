@@ -1,11 +1,10 @@
 import shared_util
 
 def generateReport(ip_ranges, host_list, db_h, sessions, hierarchy, 
-   alteredSessions, targetTree, user_ranges, target_ip, severity, db_e):
+   alteredSessions, targetTree, user_ranges, target_ip, severity, db_e, db_s):
 
    printUserInformation(user_ranges, target_ip, severity)
-   
-   printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy)
+   printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s)
    if target_ip is not "":
       if target_ip in sessions:
          print "TARGET WAS COMPROMISED:"
@@ -49,7 +48,7 @@ def printUserInformation(user_ranges, target_ip, severity):
    print "Target IP Address: " + str(target_ip)
    print "Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")"
 
-def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy):
+def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s):
 
    print "-----Discovered Machines-------------------"
    for h in db_h:
@@ -70,11 +69,13 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy):
             print "  NETWORKS FOUND POST-EXPLOITATION:"
             for network in hierarchy[host['ip']]:
                print "     " + str(network)
+      print "  FOUND SERVICES:"
+      for s in db_s[host['ip']]:
+         print "     PORT: " + str(s['port']) + ",  PROTOCOL: " + str(s['protocol']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'])
    printDivider()
 
 def findExploit(ip, sessions, db_e):
    
-   #print sessions
    port = sessions[ip]['port']
    exploit = sessions[ip]['exploit']
 

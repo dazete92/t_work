@@ -41,11 +41,11 @@ def determineAttackVectors(db_e, db_s, db_h, host_list, severity):
              
    return db
 
-def generate_attacks(attacks):
+def generate_attacks(attacks, server_ip):
    
    print "Generating attack string"
 
-   lhost = "172.16.222.1"
+   lhost = server_ip
    string = ""
    counter = 0
    p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -63,4 +63,13 @@ def generate_attacks(attacks):
    
    #print output
    return output
-      
+
+'''
+send attacks unordered
+for each host, store attacks in bins based on modrank
+generate percentages based on number of bins
+randomly select bin, randomly select exploit from bin
+run exploit, remove from bin, store in array
+preface: host,flag,sessionNum,user,type,# of exploits launched
+         exploit_name, 0 for fail, 1 for success
+'''

@@ -28,6 +28,14 @@ def copyHosts(db_h_final, db_h):
 
    return db_h_final
 
+def copyServices(db_s_final, db_s):
+
+   for host in db_s:
+      if host not in db_s_final:
+         db_s_final[host] = db_s[host]
+
+   return db_s_final
+
 def copySessions(sessions_final, session_db):
 
    for session in session_db:
