@@ -36,12 +36,12 @@ def determineAttackVectors(db_e, db_s, db_h, host_list, severity):
                         if db_e[service['port']][exploit]['os'] == "multi":
                            db[host].append(db_e[service['port']][exploit])
    
-   for host in host_list:
-      db[host] = sorted(db[host], key=itemgetter('modRank'), reverse=True)
+   #for host in host_list:
+      #db[host] = sorted(db[host], key=itemgetter('modRank'), reverse=True)
              
    return db
 
-def generate_attacks(attacks, server_ip):
+def generate_attacks(attacks, server_ip, severity):
    
    print "Generating attack string"
 
@@ -53,11 +53,12 @@ def generate_attacks(attacks, server_ip):
       rhost = host
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
-         string += str(rhost) + "," + str(name) + "," + str(lhost) + ";"
+         rank = attacks[host][attack]['modRank']
+         string += str(rhost) + "," + str(name) + "," + str(lhost) + "," + str(rank) + ";"
          counter += 1
 
    print "Launching attack string"         
-   p.stdin.write("arguments %s %s" % (str(counter), string))
+   p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
    output = p.communicate()[0]
    p.stdin.close();
    

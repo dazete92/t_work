@@ -44,10 +44,6 @@ def parseSessionData(sessions):
 
    return session_db
 
-def generateRandomNumber():
-
-   return 0
-
 def printRankingThresholds():
    
    print "Ranking Thresholds:"

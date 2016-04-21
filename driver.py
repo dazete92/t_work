@@ -73,7 +73,7 @@ def main():
       ## attack generation
       attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
       #atk_gen.print_attacks(attacks)
-      sessions = atk_gen.generate_attacks(attacks, server_ip)
+      sessions = atk_gen.generate_attacks(attacks, server_ip, severity)
 
       ## privilege escalation module (combine with pivoting)
       session_db = shared_util.parseSessionData(sessions)

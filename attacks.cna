@@ -1,21 +1,24 @@
 command arguments {
-   local('$counter @attacks');
+   local('$counter @attacks $minBin');
 
    $counter = $1;
-   #@attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1;");
+   #@attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
    @attacks = split(';', "$2");
+   $minBin = $3;
 
-   fire_event_local("prep_attacks", $counter, @attacks);
+   fire_event_local("prep_attacks", $counter, @attacks, $minBin);
 }
 
 on prep_attacks {
-   local('@attacks @temp $i $j $k $limit $host $tempHost')
+   local('@attacks @temp $i $j $k $limit $host $tempHost $numBins')
    
    $limit = $1;
    @temp = $2;
    $tempHost = "";
    $j = 0;
    $k = 0;
+
+   $numBins = (6 - $minBin) + 1;
 
    for ($i = 0; $i < $limit; $i++, $k++) {
       $host = split(',', @temp[$i])[0];
@@ -33,9 +36,9 @@ on prep_attacks {
       @attacks[$j][$k] = @temp[$i];
       
    }
-   #println(@attacks);
+   println(@attacks);
    fire_event_local("launch_attacks", @attacks);
-   #quit();
+   quit();
 }
 
 on launch_attacks {
