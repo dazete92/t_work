@@ -10,7 +10,7 @@ command arguments {
 }
 
 on prep_attacks {
-   local('@attacks @temp $i $j $k $limit $host $tempHost $numBins')
+   local('@attacks @temp $i $j $k $limit $host $tempHost $numBins');
    
    $limit = $1;
    @temp = $2;
@@ -18,7 +18,7 @@ on prep_attacks {
    $j = 0;
    $k = 0;
 
-   $numBins = (6 - $minBin) + 1;
+   #$numBins = (6 - $minBin) + 1;
 
    for ($i = 0; $i < $limit; $i++, $k++) {
       $host = split(',', @temp[$i])[0];
@@ -36,9 +36,9 @@ on prep_attacks {
       @attacks[$j][$k] = @temp[$i];
       
    }
-   println(@attacks);
+   #println(@attacks);
    fire_event_local("launch_attacks", @attacks);
-   quit();
+   #quit();
 }
 
 on launch_attacks {

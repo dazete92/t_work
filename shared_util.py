@@ -6,7 +6,7 @@ from netaddr import IPNetwork, IPAddress, IPRange
 
 def defineGlobals():
    global prop_file_name
-   prop_file_name = "vm.prop"
+   prop_file_name = "__connect.prop"
 
 def isTargetInRange(ip_ranges, target_ip):
 
@@ -36,7 +36,7 @@ def parseSessionData(sessions):
 
    for line in sessions.splitlines():
       chars = line.split(',')
-      if chars[2] == 0:
+      if chars[2] != 0:
          data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], \
          'user': chars[3], 'exploit': chars[4], 'type': chars[5], 'port': chars[6]}
 

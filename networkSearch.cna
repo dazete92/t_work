@@ -16,45 +16,35 @@ on networkSearch {
    $console = console();
    @sessions = $1;
 
-         #on("console", $this);
    on("meterpreter", $this);
-         #on("shell", $this);
 
    foreach $session (@sessions) {
       @info = split(",", $session);
-      #println(@info);
 
       $sid = @info[0];
       cmd($console, "sessions -i $sid");
-            #println("first shell command");
-            #m_cmd($sid, "ifconfig"); # | grep 'inet addr' | cut -d: -f2 | awk '{print \$1 }'");
-            #m_cmd($sid, "ifconfig");
       m_cmd($sid, "ipconfig");
       yield;
 
       @output = split('\n', $3);
       foreach $line (@output) {
-         if ($line hasmatch "IPv4") {
-            if ($line hasmatch "Address") {
+         if ($line hasmatch 'IPv4') {
+            if ($line hasmatch 'Address') {
                $temp = substr(split(":", $line)[1], 1);
                push(@ips, $temp);
+               if ((size(@ips) - size(@masks)) == 2) {
+                  push(@masks, "");
+               }
+               while ($line hasmatch 'Address') {};               
             }
-            if ($line hasmatch "Netmask") {
+            if ($line hasmatch 'Netmask') {
                $temp = substr(split(":", $line)[1], 1);
                push(@masks, $temp);
+               while ($line hasmatch 'Netmask') {};
             }
+            while ($line hasmatch 'IPv4') {};
          }
       }
-            #@ips = sublist(split('\n', $3), 2);
-            #println(@ips);
-            #quit();
-
-            #println("second shell command");
-            #s_cmd(@info[0], "ifconfig | grep 'inet addr' | cut -d: -f4 | awk '{print \$1 }'");
-            #yield;
-            #@masks = sublist(split('\n', $3), 2);
-            #println(@masks);
-
       %networks = addNetworks(%networks, @ips, @masks, @info[1]);
       @ips = @();
       @masks = @();
@@ -62,7 +52,7 @@ on networkSearch {
 
    foreach $host (%networks) {
       foreach $net (%networks[$host]) {
-         println("$host" . "," . "$net");
+         println("$net");
       }
    }
    addPivots(%networks, @sessions);
@@ -78,7 +68,7 @@ sub addNetworks {
    $host = $4;
 
    for ($i = 0; $i < size(@ips); $i += 1) {
-      if (@ips[$i] ne "127.0.0.1" || @ips[$i] ne $host) {
+      if (@ips[$i] ne "127.0.0.1" && @ips[$i] ne $host) {
         
          if ($host in %networks) {}
          else {

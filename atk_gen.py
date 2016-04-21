@@ -36,8 +36,8 @@ def determineAttackVectors(db_e, db_s, db_h, host_list, severity):
                         if db_e[service['port']][exploit]['os'] == "multi":
                            db[host].append(db_e[service['port']][exploit])
    
-   #for host in host_list:
-      #db[host] = sorted(db[host], key=itemgetter('modRank'), reverse=True)
+   for host in host_list:
+      db[host] = sorted(db[host], key=itemgetter('modRank'), reverse=True)
              
    return db
 
