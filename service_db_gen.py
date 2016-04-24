@@ -41,26 +41,27 @@ def generate_db(host_list):
    db = defaultdict()
    string = ""
 
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'services.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-
    for host in host_list:
       string += host + ","
 
-   p.stdin.write("arguments %s" % string);
-   output = p.communicate()[0]
-   
-   for line in output.splitlines():
-      chars = line.split(',')
-      (host, port, protocol, name, state, info) = parseData(chars)
+   if string is not "":
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'services.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
-      # creates dictionary of information for each exploit
-      data = {'port': port, 'protocol': protocol, 'name': name, 'state': state,
-         'info': info}
+      p.stdin.write("arguments %s" % string);
+      output = p.communicate()[0]
       
-      # creates a searchable database of exploits, organized by port number
-      if host not in db:
-         db[host] = []
-      db[host].append(data)
+      for line in output.splitlines():
+         chars = line.split(',')
+         (host, port, protocol, name, state, info) = parseData(chars)
+
+         # creates dictionary of information for each exploit
+         data = {'port': port, 'protocol': protocol, 'name': name, 'state': state,
+            'info': info}
+         
+         # creates a searchable database of exploits, organized by port number
+         if host not in db:
+            db[host] = []
+         db[host].append(data)
          
    return db
    

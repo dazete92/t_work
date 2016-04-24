@@ -39,26 +39,32 @@ def generate_db(host_list):
 
    print "Generating host database"
    db = defaultdict()
+   new_host_list = defaultdict()
    string = ""
 
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-       
    for host in host_list:
       string += host + ","
 
-   p.stdin.write("arguments %s" % string);
-   output = p.communicate()[0]
-   
-   for line in output.splitlines():
-      chars = line.split(',')
-      (ip, os_name, os_version) = parseData(chars)
-
-      # creates dictionary of information for each host
-      data = {'ip': ip, 'os_name': os_name, 'os_version': os_version}
+   if string is not "":
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'hosts.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+          
+      p.stdin.write("arguments %s" % string);
+      output = p.communicate()[0]
       
-      # creates a searchable database of hosts, organized by ip address
-      if ip not in db:
-         db[ip] = data
+      for line in output.splitlines():
+         chars = line.split(',')
+         (ip, os_name, os_version) = parseData(chars)
+
+         # creates dictionary of information for each host
+         data = {'ip': ip, 'os_name': os_name, 'os_version': os_version}
          
-   return db
+         # creates a searchable database of hosts, organized by ip address
+         if ip not in db:
+            db[ip] = data
+
+      for host in host_list:
+         if host in db:
+            new_host_list[host] = host_list[host]
+         
+   return (db, new_host_list)
    

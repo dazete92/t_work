@@ -1,21 +1,11 @@
 debug(7);
 
-command arguments {
-   local('@sessions');
-   @sessions = split(';', $1);
-   fire_event_local("closeSessions", @sessions);
-}
+on ready {
+   local('$console');
+   $console = console();
 
-on closeSessions {
-   local('@sessions $session');
-   @sessions = $1;
+   cmd($console, "sessions -K");
 
-   on("session_close", $this);
-
-   foreach $session (@sessions) {
-      session_close($session);
-      yield;
-   }
    sleep(3000);
    quit();
 }

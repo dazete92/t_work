@@ -41,11 +41,16 @@ def printTree(tree, target_ip):
 
 def printUserInformation(user_ranges, target_ip, severity):
 
+   target = ""
    print "-----Provided IP Address and/or ranges-----"
    for i in range (0, len(user_ranges)):
       print user_ranges[i]
 
-   print "Target IP Address: " + str(target_ip)
+   if target_ip is "":
+      target = "None"
+   else:
+      target = target_ip
+   print "Target IP Address: " + str(target)
    print "Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")"
 
 def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s):

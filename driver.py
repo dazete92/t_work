@@ -51,9 +51,11 @@ def main():
 
    scan = nmap_scan.scan_location_setup()
    if scan == "y" or scan == "Y":
-      host_list = nmap_scan.scan(ip_ranges)
+      host_list = nmap_scan.scan(ip_ranges, [])
    else:
       host_list = shared_util.parseIPRanges(ip_ranges);
+
+   print host_list
 
    ## exploit gathering
    db_e = exploit_db_gen.determine_db(exploit_file_gen)
@@ -67,7 +69,7 @@ def main():
       #service_db_gen.print_db(db_s)
 
       ## host gathering
-      db_h = host_db_gen.generate_db(host_list)
+      (db_h, host_list) = host_db_gen.generate_db(host_list)
       #host_db_gen.print_db(db_h)
 
       ## attack generation
@@ -80,7 +82,7 @@ def main():
       session_db = shared_util.parseSessionData(sessions)
       print session_db
 
-      (session_db, new_networks, hierarchy, alteredSessions) = post_exploit.searchForTarget(session_db, db_h, host_list)
+      (session_db, new_networks, hierarchy, alteredSessions, exclude) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
       #copy data into final structures
       ip_ranges_final = copy.copyIPRanges(ip_ranges_final, ip_ranges)
@@ -94,7 +96,7 @@ def main():
       # conduct new scan or quit
       if len(new_networks) > 0:
          ip_ranges = new_networks
-         temp_host_list = nmap_scan.scan(ip_ranges)
+         temp_host_list = nmap_scan.scan(ip_ranges, exclude)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
          host_list = temp_host_list.copy()
       else:
@@ -111,7 +113,7 @@ def main():
       target_ip, severity, db_e, db_s_final)
 
    ## close all open sessions
-   post_exploit.closeSessions(sessions_final)
+   post_exploit.closeSessions()
    print "Done"
 
 if __name__ == '__main__':

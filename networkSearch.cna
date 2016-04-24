@@ -6,6 +6,7 @@ on ready {
 
 command arguments {
    local('@sessions');
+   #@sessions = split(';', "15,172.16.221.132;16,172.16.221.133;17,172.16.221.135;");
    @sessions = split(';', $1);
    #println("arguments");
    fire_event_local("networkSearch", @sessions);
@@ -52,7 +53,7 @@ on networkSearch {
 
    foreach $host (%networks) {
       foreach $net (%networks[$host]) {
-         println("$net");
+         println("$host" . "," . "$net");
       }
    }
    addPivots(%networks, @sessions);
@@ -84,12 +85,10 @@ sub addNetworks {
 }
 
 sub addPivots {
-   local('$console %networks @sessions $session @info $sid $host $net');
+   local('$console %networks @sessions $session @info $sid $host $net $ip $mask @ips $i');
    $console = console();
    %networks = $1;
    @sessions = $2;
-
-   on("meterpreter", $this);
 
    foreach $session (@sessions) {
       @info = split(",", $session);
@@ -97,10 +96,12 @@ sub addPivots {
 
       if ($host in %networks) {
          $sid = @info[0];
-         cmd($console, "sessions -i $sid");
          foreach $net (%networks[$host]) {
-            m_cmd($sid, "run autoroute $net ");
-            yield;
+            $ip = split(",", $net)[0];
+            $ip = substr($ip, 0, lindexOf($ip, ".") + 1) . "0";
+            $mask = split(",", $net)[1];
+            cmd($console, "route add $ip $mask $sid");
+            sleep(3000);
          }
       }
    }

@@ -1,14 +1,15 @@
 debug(7);
 
 command arguments {
-   local('@ips');
+   local('@ips @exclude');
 
    @ips = split(';', "$1");
-   fire_event_local("launch_scan", @ips);
+   @exclude = split(';', "$2");
+   fire_event_local("launch_scan", @ips, @exclude);
 }
 
 on launch_scan {
-   local('$console $ip $ips');
+   local('$console $ip $ips $ex $exs');
    
    $console = console();
    
@@ -16,8 +17,11 @@ on launch_scan {
       $ips = $ips . $ip . " ";
    }
    #println($ips);
+   foreach $ex ($2) {
+      $exs = $exs . $ex . " ";
+   }
 
-   cmd($console, "db_nmap --min-hostgroup 96 -sS -sU -n -T4 -A -v -sV -n -F -O --osscan-limit --osscan-guess --version-light $ips");
+   cmd($console, "db_nmap --min-hostgroup 96 -sS -sU -n -T4 -A -v -sV -n -F -O --osscan-limit --osscan-guess --version-light $ips --exclude $exs");
 }
 
 on console_db_nmap {

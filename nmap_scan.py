@@ -37,18 +37,29 @@ def scan_location_setup():
    scan = raw_input("Perform scan on selected IPs? (y/n): ")
    return scan
    
-def scan(ip_ranges):
+def scan(ip_ranges, exclude):
    
    print "Initializing Nmap scan"
    ips = ""
-   
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
-   
+   exs = ""
+
    for i in range (0, len(ip_ranges)):
-      ips += str(ip_ranges[i]) + ";"  
-   ips = ips[:len(ips)-1]
+      ips += str(ip_ranges[i]) + ";"
+
+   for i in range (0, len(exclude)):
+      exs += str(exclude[i]) + ";"
+
+   if ips is not "":
+      print ips, exs
+      ips = ips[:len(ips)-1]
+      if exs is not "":
+         exs = exs[:len(exs) - 1];
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
    
-   p.stdin.write("arguments %s" % ips)
-   output = p.communicate()[0]
-   
-   return shared_util.parseIPRanges(output.splitlines())
+      p.stdin.write("arguments %s %s" % (ips, exs))
+      output = p.communicate()[0]
+
+      print "Scan output: " + str(output)
+      return shared_util.parseIPRanges(output.splitlines())
+
+   return defaultdict()

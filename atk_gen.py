@@ -48,7 +48,7 @@ def generate_attacks(attacks, server_ip, severity):
    lhost = server_ip
    string = ""
    counter = 0
-   p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+
    for host in attacks:
       rhost = host
       for attack in range(len(attacks[host])):
@@ -57,13 +57,15 @@ def generate_attacks(attacks, server_ip, severity):
          string += str(rhost) + "," + str(name) + "," + str(lhost) + "," + str(rank) + ";"
          counter += 1
 
-   print "Launching attack string"         
-   p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
-   output = p.communicate()[0]
-   p.stdin.close();
-   
-   #print output
-   return output
+   if string is not "":
+      print "Launching attack string"    
+      p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)   
+      p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
+      output = p.communicate()[0]
+      p.stdin.close();
+      return output
+      
+   return []
 
 '''
 send attacks unordered
