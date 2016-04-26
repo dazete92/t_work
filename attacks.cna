@@ -2,15 +2,15 @@ command arguments {
    local('$counter @attacks $minBin');
 
    $counter = $1;
-   #@attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
-   @attacks = split(';', "$2");
+   @attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
+   #@attacks = split(';', "$2");
    $minBin = $3;
 
    fire_event_local("prep_attacks", $counter, @attacks, $minBin);
 }
 
 on prep_attacks {
-   local('@attacks @temp $i $j $k $limit $host $tempHost $numBins');
+   local('@attacks @temp %num_exps $counter $i $j $k $z $bin $limit $host $rank $tempHost $numBins %h');
    
    $limit = $1;
    @temp = $2;
@@ -18,27 +18,54 @@ on prep_attacks {
    $j = 0;
    $k = 0;
 
-   #$numBins = (6 - $minBin) + 1;
+   $numBins = (6 - $3);
 
    for ($i = 0; $i < $limit; $i++, $k++) {
       $host = split(',', @temp[$i])[0];
+
+      $rank = split(',', @temp[$i])[3];
       #println($tempHost . " vs " . $host);
       if ($tempHost eq "") {
          $tempHost = $host;
+         for ($z = 0; $z <= $numBins; $z++) {
+            %h[$tempHost][$z] = @();
+         }
       }
       else if ($tempHost ne $host) {
+         %num_exps[$temphost] = $counter;
          $tempHost = $host;
          $j++;
          $k = 0;
+         for ($z = 0; $z <= $numBins; $z++) {
+            %h[$tempHost][$z] = @();
+         }
       }      
       
+      $bin = determineBin($numBins, $rank);
+      push(%h[$tempHost][$bin], @temp[$i]);
+      %num_exps[$tempHost] += 1;
+
       #println("[" . $j . "][" . "$k" . "]");
-      @attacks[$j][$k] = @temp[$i];
+      #@attacks[$j][$k] = @temp[$i];
       
    }
-   #println(@attacks);
-   fire_event_local("launch_attacks", @attacks);
-   #quit();
+
+   println(%h);
+   println(%num_exps);
+   #fire_event_local("launch_attacks", @attacks);
+   #fire_event_local("launch_attacks", %h, $numBins);
+   quit();
+}
+
+sub determineBin {
+   local('$i $t')
+
+   $t = 6.0;
+   for ($i = 0; $i <= $1; $i++) {
+      if ($2 >= ($t - $i)) {
+         return $i;
+      }
+   }
 }
 
 on launch_attacks {

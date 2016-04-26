@@ -42,6 +42,7 @@ def scan(ip_ranges, exclude):
    print "Initializing Nmap scan"
    ips = ""
    exs = ""
+   args = 0;
 
    for i in range (0, len(ip_ranges)):
       ips += str(ip_ranges[i]) + ";"
@@ -50,13 +51,16 @@ def scan(ip_ranges, exclude):
       exs += str(exclude[i]) + ";"
 
    if ips is not "":
+      args += 1
       print ips, exs
       ips = ips[:len(ips)-1]
       if exs is not "":
          exs = exs[:len(exs) - 1];
+         args += 1
+   
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'nmap_scan.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE);
    
-      p.stdin.write("arguments %s %s" % (ips, exs))
+      p.stdin.write("arguments %s %s %s" % (args, ips, exs))
       output = p.communicate()[0]
 
       print "Scan output: " + str(output)
