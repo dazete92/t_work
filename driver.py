@@ -75,9 +75,10 @@ def main():
       ## attack generation
       attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
       #atk_gen.print_attacks(attacks)
-      (sessions, exploitsRun) = atk_gen.generate_attacks(attacks, server_ip, severity)
-      print sessions
-
+      (session_db, exploitsRun) = atk_gen.generate_attacks(attacks, server_ip, severity)
+      print session_db
+      print exploitsRun
+      quit()
       ## privilege escalation module (combine with pivoting)
       session_db = shared_util.parseSessionData(sessions)
       print session_db
@@ -92,6 +93,7 @@ def main():
       hierarchy_final = copy.copyHierarchy(hierarchy_final, hierarchy)
       alteredSessions_final = copy.copyAlteredSessions(alteredSessions_final, alteredSessions)
       db_s_final = copy.copyServices(db_s_final, db_s)
+      #copy exploitsRun
 
       # conduct new scan or quit
       if len(new_networks) > 0:
