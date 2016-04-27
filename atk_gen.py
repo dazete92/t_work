@@ -48,6 +48,7 @@ def generate_attacks(attacks, server_ip, severity):
    lhost = server_ip
    string = ""
    counter = 0
+   output = ""
 
    for host in attacks:
       rhost = host
@@ -63,9 +64,40 @@ def generate_attacks(attacks, server_ip, severity):
       p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
       output = p.communicate()[0]
       p.stdin.close();
-      return output
       
-   return []
+   return getSessionsAndExploits(output)
+
+def getSessionsAndExploits(output):
+
+   session_db = defaultdict()
+   exploitsRun = defaultdict()
+   i = 0
+
+   lines = output.splitlines()
+   while i < len(lines):
+      chars = lines[i].split(',')
+      if chars[2] != 0:
+         data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], \
+         'user': chars[3], 'exploit': chars[4], 'type': chars[5], 'port': chars[6], \
+         'numRun': chars[7]}
+
+         session_db[chars[0]] = data
+
+      host = chars[0]
+      exploits_run = chars[7]
+      j = 0
+      while j < exploits_run:
+         chars = lines[i + (j + 1)].split(',')
+         data = {'name': chars[0], 'success': chars[1]}
+
+         if host not in exploitsRun:
+            exploitsRun[host] = []
+         exploitsRun[host].append(data)
+         j += 1
+      i += j + 1
+
+   print session_db, exploitsRun
+   return (session_db, exploitsRun)
 
 '''
 send attacks unordered
