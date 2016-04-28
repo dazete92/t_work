@@ -88,6 +88,12 @@ def findExploit(ip, sessions, db_e):
       if db_e[port][i]['name'] == exploit:
          return db_e[port][i]
 
+def determineOrdinalNumber(num):
+
+   if num % 100 >= 10 and num % 100 < 20:
+      return str(num) + "th"
+   return str(num) + {1: "st", 2: "nd", 3: "rd"}.get(num % 10, "th")
+
 def getSeverity(severity):
    dic = {'0': "Manual", '1': "Low", '2': "Average", '3': "Normal",
       '4': "Good", '5': "Great", '6': "Excellent"}

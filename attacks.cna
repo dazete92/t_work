@@ -180,11 +180,11 @@ on launch_attacks {
          cmd($console, "jobs -K");
          if (size(sessions()) > $numSessions) {
             $numSessions = size(sessions());
-            push(%exploits[$host][1], $attack);
+            push(%exploits[$host][1], $name);
             break;
          }
          else {
-            push(%exploits[$host][0], $attack);
+            push(%exploits[$host][0], $name);
          }
       }
       %exp_run[$host] = $count;

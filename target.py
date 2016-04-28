@@ -1,12 +1,6 @@
 from collections import defaultdict
 from netaddr import IPNetwork, IPAddress, IPRange
 
-def determineOrdinalNumber(num):
-
-   if num % 100 >= 10 and num % 100 < 20:
-      return str(num) + "th"
-   return str(num) + {1: "st", 2: "nd", 3: "rd"}.get(num % 10, "th")
-
 def getTargetTree(host_list_final, target_ip):
 
    targetTree = defaultdict()
@@ -32,7 +26,8 @@ def getTargetTree(host_list_final, target_ip):
             del host_list_final[treeRoot]
 
          for child in children:
-            del host_list_final[child]
+            if child != "root":
+               del host_list_final[child]
 
          #print "\nhost_list: " + str(host_list_final)
          #print "\ntargetTree: " + str(targetTree) + "\n"
@@ -46,6 +41,8 @@ def findImmediateChildren(host_list_final, children, targetTree):
 
    for child in children:
       subnet = child[:child.rfind('.') + 1]
+      if subnet == "":
+         subnet = "null"
       for key in host_list_final:
          #print child, key, key.find(subnet), host_list_final[key]
          if key == child:
@@ -58,6 +55,7 @@ def findImmediateChildren(host_list_final, children, targetTree):
             c.append(key)
             targetTree[key] = child
 
+   #print c
    return (targetTree, c, flag)
 
 '''
@@ -65,7 +63,7 @@ def main():
 
    temp = {'1.2.3.4': '172.16.221.154', '9.9.9.1': '172.16.221.154', \
       '172.16.222.133': 'root', '172.16.222.132': 'root', '172.16.222.135': 'root', \
-      '172.16.221.155': '172.16.222.135', '5.6.7.8': '172.16.221.155', \
+      '172.16.221.155': 'root', '5.6.7.8': '172.16.221.155', \
       '172.16.221.154': '172.16.222.135', '0.0.0.0': '172.16.222.132'}
    target_ip = "172.16.221.155"
    tree = getTargetTree(temp, target_ip)

@@ -74,6 +74,13 @@ def copyAlteredSessions(altered_final, altered):
    altered_final.extend(altered)
    return altered_final
 
+def copyExploitsRun(exploitsRun_final, exploitsRun):
+
+   for host in exploitsRun:
+      if host not in exploitsRun_final:
+         exploitsRun_final[host] = []
+         exploitsRun_final[host].extend(exploitsRun[host])
+   return exploitsRun_final
 
 #def main():
    '''

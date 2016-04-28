@@ -24,6 +24,7 @@ def main():
    hierarchy_final = defaultdict()
    host_list_final = defaultdict()
    db_s_final = defaultdict()
+   exploitsRun_final = defaultdict()
 
    shared_util.defineGlobals()
    prop_file_gen = False if "-init" in sys.argv else True
@@ -55,7 +56,7 @@ def main():
    else:
       host_list = shared_util.parseIPRanges(ip_ranges);
 
-   print host_list
+   #print host_list
 
    ## exploit gathering
    db_e = exploit_db_gen.determine_db(exploit_file_gen)
@@ -76,12 +77,12 @@ def main():
       attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
       #atk_gen.print_attacks(attacks)
       (session_db, exploitsRun) = atk_gen.generate_attacks(attacks, server_ip, severity)
-      print session_db
-      print exploitsRun
-      quit()
+      #print session_db
+      #print "-------------------------------------"
+      #print exploitsRun
       ## privilege escalation module (combine with pivoting)
-      session_db = shared_util.parseSessionData(sessions)
-      print session_db
+      #session_db = shared_util.parseSessionData(sessions)
+      #print session_db
 
       (session_db, new_networks, hierarchy, alteredSessions, exclude) = post_exploit.searchForTarget(session_db, db_h, host_list)
 
@@ -93,7 +94,9 @@ def main():
       hierarchy_final = copy.copyHierarchy(hierarchy_final, hierarchy)
       alteredSessions_final = copy.copyAlteredSessions(alteredSessions_final, alteredSessions)
       db_s_final = copy.copyServices(db_s_final, db_s)
-      #copy exploitsRun
+      exploitsRun_final = copy.copyExploitsRun(exploitsRun_final, exploitsRun)
+      #print "-----------------------"
+      #print exploitsRun_final
 
       # conduct new scan or quit
       if len(new_networks) > 0:
@@ -106,7 +109,7 @@ def main():
          break
 
    ## exploit db updater
-   exploit_db_gen.update_db(db_e, db_h_final, sessions_final, attacks_final)
+   exploit_db_gen.update_db(db_e, db_h_final, sessions_final, exploitsRun_final)
 
    ## reporting module
    targetTree = target.getTargetTree(host_list_final, target_ip)

@@ -64,7 +64,7 @@ def generate_attacks(attacks, server_ip, severity):
       p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
       output = p.communicate()[0]
       p.stdin.close();
-      print output
+      #print output
       
    return getSessionsAndExploits(output)
 
@@ -75,9 +75,9 @@ def getSessionsAndExploits(output):
    i = 0
 
    lines = output.splitlines()
-   print "Lines: " + str(len(lines))
+   #print "Lines: " + str(len(lines))
    while i < len(lines):
-      print lines[i]
+      #print lines[i]
       chars = lines[i].split(',')
       if chars[2] != 0:
          data = {'host': chars[0], 'success': chars[1], 'sessionNum': chars[2], \
@@ -89,9 +89,9 @@ def getSessionsAndExploits(output):
       host = chars[0]
       exploits_run = chars[7]
       j = 0
-      print "exploits run: " + str(exploits_run)
+      #print "exploits run: " + str(exploits_run)
       while j < int(exploits_run):
-         print i + (j + 1), i, j
+         #print i + (j + 1), i, j
          chars = lines[i + (j + 1)].split(',')
          data = {'name': chars[0], 'success': chars[1]}
 
@@ -101,7 +101,7 @@ def getSessionsAndExploits(output):
          j += 1
       i += j + 1
 
-   print session_db, exploitsRun
+   #print session_db, exploitsRun
    return (session_db, exploitsRun)
 
 '''

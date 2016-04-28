@@ -34,7 +34,7 @@ on launch_scan {
 
 on console_db_nmap {
    local('$console @hosts $host');
-   sleep(3000);
+   sleep(5000);
    @hosts = host_addresses();
    foreach $host (@hosts) {
       println("$host");
