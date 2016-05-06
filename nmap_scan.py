@@ -37,7 +37,7 @@ def scan_location_setup():
    scan = raw_input("Perform scan on selected IPs? (y/n): ")
    return scan
    
-def scan(ip_ranges, exclude):
+def scan(ip_ranges, exclude, host_list_final):
    
    print "Initializing Nmap scan"
    ips = ""
@@ -64,6 +64,12 @@ def scan(ip_ranges, exclude):
       output = p.communicate()[0]
 
       print "Scan output: " + str(output)
-      return shared_util.parseIPRanges(output.splitlines())
+      db = shared_util.parseIPRanges(output.splitlines())
+
+      for host in host_list_final:
+         if host in db:
+            del db[host]
+
+      return db
 
    return defaultdict()

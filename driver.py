@@ -52,7 +52,7 @@ def main():
 
    scan = nmap_scan.scan_location_setup()
    if scan == "y" or scan == "Y":
-      host_list = nmap_scan.scan(ip_ranges, [])
+      host_list = nmap_scan.scan(ip_ranges, [], {})
    else:
       host_list = shared_util.parseIPRanges(ip_ranges);
 
@@ -103,7 +103,7 @@ def main():
          ip_ranges = new_networks
          temp_host_list = nmap_scan.scan(ip_ranges, exclude)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
-         host_list = temp_host_list.copy()
+         host_list = temp_host_list
       else:
          host_list_final = copy.copyHostList(host_list_final, host_list, [], hierarchy)
          break
