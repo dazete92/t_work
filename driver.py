@@ -18,6 +18,7 @@ def main():
 
    ip_ranges_final = []
    alteredSessions_final = []
+   hosts = []
    db_h_final = defaultdict()
    sessions_final = defaultdict()
    attacks_final = defaultdict()
@@ -52,7 +53,7 @@ def main():
 
    scan = nmap_scan.scan_location_setup()
    if scan == "y" or scan == "Y":
-      host_list = nmap_scan.scan(ip_ranges, [], {})
+      host_list = nmap_scan.scan(ip_ranges, [], [])
    else:
       host_list = shared_util.parseIPRanges(ip_ranges);
 
@@ -95,13 +96,13 @@ def main():
       alteredSessions_final = copy.copyAlteredSessions(alteredSessions_final, alteredSessions)
       db_s_final = copy.copyServices(db_s_final, db_s)
       exploitsRun_final = copy.copyExploitsRun(exploitsRun_final, exploitsRun)
-      #print "-----------------------"
-      #print exploitsRun_final
 
       # conduct new scan or quit
       if len(new_networks) > 0:
          ip_ranges = new_networks
-         temp_host_list = nmap_scan.scan(ip_ranges, exclude)
+         hosts = copy.copyHostsForScanning(hosts, host_list)
+         temp_host_list = nmap_scan.use_scanners(ip_ranges, exclude, hosts)
+         temp_host_list = nmap_scan.scan(ip_ranges, exclude, host_list_final)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
          host_list = temp_host_list
       else:

@@ -22,8 +22,9 @@ on console_services {
 		   ($line ismatch '(.*?)\s+(\d+)\s+(\w+)\s+(\w+-\w+)\s+(\w+)\s+(.*?)')) {
 		   
 			($host, $port, $protocol, $name, $state, $info) = matched();
-			println("$host" . "," . "$port" . "," . "$protocol" . "," . "$name" . "," . 
-			   "$state" . "," . "$info");
+			if ($state eq "open" || $state eq "unknown") {
+				println("$host" . "," . "$port" . "," . "$protocol" . "," . "$name" . "," . "$state" . "," . "$info");
+			}
 		}
 	}
 	quit();

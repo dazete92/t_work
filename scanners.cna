@@ -1,0 +1,55 @@
+command arguments {
+   local('$args @ips @exclude');
+
+   @ips = split(';', "$1");
+   fire_event_local("launch_portscan", $args, @ips);
+}
+
+on launch_portscan {
+   local('$console $ip $ips');
+   
+   $console = console();
+
+   foreach $ip ($2) {
+      $ips = $ips . $ip . " ";
+   }
+
+   cmd($console, "use auxiliary/scanner/portscan/tcp");
+   cmd_set($console, %(RHOSTS => "$ips", CONCURRENCY => "20", THREADS => "24", TIMEOUT => "200"));
+   cmd($console, "run");  
+}
+
+on console_run {
+   local('$console @scanners $scanner $i %options $port');
+   @scanners = @("ftp", "http", "imap", "mysql", "pop3", "smb", "ssh", "telnet");
+   $console = console();
+
+   on("console", $this);
+
+   for ($i = 0; $i < size(@scanners); $i++) {
+      $scanner = @scanners[$i];
+      $name = "scanner/" . $scanner . "/" . $scanner . "_version";
+      cmd($console, "use auxiliary/" . $name);
+      %options = options("auxiliary", $name);
+      $port = %options["RHOST"]["default"];
+      println(%options);
+      cmd($console, "services -R --rhosts -p " . $port);
+      cmd($console, "run")
+
+      yield;
+      while ($2 ne "run") {
+         yield;
+      }
+   }
+
+   fire_event_local("print_hosts");
+}
+
+on print_hosts {
+   local('$console @hosts $host');
+   @hosts = host_addresses();
+   foreach $host (@hosts) {
+      println("$host");
+   }
+   quit();
+}

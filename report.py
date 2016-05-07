@@ -59,9 +59,10 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
    for h in db_h:
       host = db_h[h]
       print "HOST: " + host['ip']
-      compromised = host['ip'] in sessions
+      compromised = True if sessions[host['ip']]['success'] == "true" else False
       print "  OS: " + host['os_name']
       print "  VERSION: " + host['os_version']
+      print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
       print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
       if compromised == True:
          exploit = findExploit(host['ip'], sessions, db_e)
