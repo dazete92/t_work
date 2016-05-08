@@ -84,7 +84,9 @@ def use_scanners(ip_ranges, hosts):
 
    if ips is not "":
       print ips
-      ips = ips[:len(ips)-1]  
+      ips = ips[:len(ips)-1] 
+
+      print ips, hosts
 
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'scanners.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
@@ -94,10 +96,11 @@ def use_scanners(ip_ranges, hosts):
       print "Scanners output: " + str(output)
       db = shared_util.parseIPRanges(output.splitlines())
 
-      for host in host_list_final:
+      for host in hosts:
          if host in db:
             del db[host]
 
+      print db
       return db
 
    return defaultdict()

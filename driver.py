@@ -100,9 +100,9 @@ def main():
       # conduct new scan or quit
       if len(new_networks) > 0:
          ip_ranges = new_networks
-         hosts = copy.copyHostsForScanning(hosts, host_list)
-         temp_host_list = nmap_scan.use_scanners(ip_ranges, exclude, hosts)
-         temp_host_list = nmap_scan.scan(ip_ranges, exclude, host_list_final)
+         hosts = copy.copyHostsForScanning(hosts, host_list, exclude)
+         temp_host_list = nmap_scan.use_scanners(ip_ranges, hosts)
+         #temp_host_list = nmap_scan.scan(ip_ranges, exclude, host_list_final)
          host_list_final = copy.copyHostList(host_list_final, host_list, temp_host_list, hierarchy)
          host_list = temp_host_list
       else:

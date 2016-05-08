@@ -1,20 +1,21 @@
 import shared_util
+from collections import defaultdict
 
 def generateReport(ip_ranges, host_list, db_h, sessions, hierarchy, 
    alteredSessions, targetTree, user_ranges, target_ip, severity, db_e, db_s):
 
    printUserInformation(user_ranges, target_ip, severity)
-   printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s)
+   comp_hosts = printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s)
    if target_ip is not "":
       if target_ip in sessions:
          print "TARGET WAS COMPROMISED:"
-         printTree(targetTree, target_ip)
+         printTree(targetTree, target_ip, comp_hosts)
       else:
          print "TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND"
    else:
       print "TARGET WAS NOT SPECIFIED"
 
-def printTree(tree, target_ip):
+def printTree(tree, target_ip, comp_hosts):
 
    counter = 0
    parents = []
@@ -23,6 +24,7 @@ def printTree(tree, target_ip):
    print "Target: " + str(target_ip)
    parents.append(target_ip)
    del tree[target_ip]
+   comp_hosts["root"] = {'compromised': False}
 
    while len(tree) > 0:
       counter += 1
@@ -30,7 +32,9 @@ def printTree(tree, target_ip):
       for parent in parents:
          for node in tree:
             if tree[node] == parent:
-               print "parent: " + str(parent) + " -> child: " + str(node)
+               p_string = parent if comp_hosts[parent]['compromised'] == False else str(parent + "(C)")
+               c_string = node if comp_hosts[node]['compromised'] == False else str(node + "(C)")
+               print "parent: " + str(p_string) + " -> child: " + str(c_string)
                children.append(node)
 
       for child in children:
@@ -55,6 +59,8 @@ def printUserInformation(user_ranges, target_ip, severity):
 
 def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s):
 
+   comp_hosts = defaultdict()
+
    print "-----Discovered Machines-------------------"
    for h in db_h:
       host = db_h[h]
@@ -64,6 +70,7 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
       print "  VERSION: " + host['os_version']
       print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
       print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
+      comp_hosts[host['ip']] = {'compromised': compromised}
       if compromised == True:
          exploit = findExploit(host['ip'], sessions, db_e)
          print "  EXPLOIT:"
@@ -79,6 +86,7 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
       for s in db_s[host['ip']]:
          print "     PORT: " + str(s['port']) + ",  PROTOCOL: " + str(s['protocol']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'])
    printDivider()
+   return comp_hosts
 
 def findExploit(ip, sessions, db_e):
    

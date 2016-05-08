@@ -2,3 +2,7 @@ on session_open {
 	println(" $1 : $2");
 	quit();
 }
+
+on console_services {
+	println("$1 => $2 : $3");
+}

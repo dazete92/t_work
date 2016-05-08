@@ -74,9 +74,10 @@ def copyAlteredSessions(altered_final, altered):
    altered_final.extend(altered)
    return altered_final
 
-def copyHostsforScanning(hosts, temp):
+def copyHostsForScanning(hosts, temp, exclude):
 
    hosts.extend(temp)
+   hosts.extend(exclude)
    return hosts
 
 def copyExploitsRun(exploitsRun_final, exploitsRun):
