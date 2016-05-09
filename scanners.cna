@@ -14,12 +14,12 @@ on launch_portscan {
       $ips = $ips . $ip . " ";
    }
 
-   println("ips: " . $ips);
+   #println("ips: " . $ips);
    cmd($console, "use auxiliary/scanner/portscan/tcp");
-   cmd($console, "hosts -a $ips");
-   cmd_set($console, %(RHOSTS => "$ips", THREADS => "256", TIMEOUT => "200", PORTS => "1-5000"));
+   #cmd($console, "hosts -a $ips");
+   cmd_set($console, %(RHOSTS => "$ips", THREADS => "256", TIMEOUT => "200", PORTS => "22-30,53,80,100-150,389,445,650-700,990-1000,2049,3306,5000"));
    cmd($console, "run");
-   println("Running");  
+   #println("Running");  
 }
 
 on console_run {
@@ -27,7 +27,7 @@ on console_run {
    @scanners = @("ftp", "http", "imap", "mysql", "pop3", "smb", "ssh", "telnet");
    $console = console();
 
-   println("Portscan complete");
+   #println("Portscan complete");
    on("console", $this);
    yield;
 
@@ -36,7 +36,7 @@ on console_run {
       $name = "scanner/" . $scanner . "/" . $scanner . "_version";
       cmd($console, "use auxiliary/" . $name);
       yield;
-      #println("Use: " . "$1 : $2 => $3");  
+      #println("Use: " . "$2 => $3");  
       %options = options("auxiliary", $name);
       if ($scanner eq "smb") {
          $port = "139,445";
@@ -44,16 +44,15 @@ on console_run {
       else {
          $port = %options["RPORT"]["default"];
       }
-      println("$name " . "$port");
+      #println("$name " . "$port");
       cmd($console, "services -R --rhosts -p " . $port);
-      cmd($console, "set RHOSTS 172.16.221.132");
       yield;
-      #println("Services: " . "$1 : $2 => $3");
+      #println("Services: " . "$2 => $3");
       cmd($console, "exploit");
       yield;
-      #println("Exploit: " . "$1 : $2 => $3");
+      #println("Exploit: " . "$2 => $3");
 
-      sleep(10000);
+      #sleep(20000);
    }
 
    fire_event_local("print_hosts");

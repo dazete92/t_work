@@ -41,7 +41,7 @@ def determineAttackVectors(db_e, db_s, db_h, host_list, severity):
              
    return db
 
-def generate_attacks(attacks, server_ip, severity):
+def generate_attacks(attacks, server_ip, severity, existing):
    
    print "Generating attack string"
 
@@ -52,6 +52,7 @@ def generate_attacks(attacks, server_ip, severity):
 
    for host in attacks:
       rhost = host
+      #print "Counter: " + str(counter)
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
          rank = attacks[host][attack]['modRank']
@@ -59,16 +60,18 @@ def generate_attacks(attacks, server_ip, severity):
          counter += 1
 
    if string is not "":
-      print "Launching attack string"    
+      print "Launching attack string"
+
+      #print "Attack string: " + string, str(counter), existing
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)   
-      p.stdin.write("arguments %s %s %s" % (str(counter), string, severity))
+      p.stdin.write("arguments %s %s %s %s" % (str(counter), string, severity, existing))
       output = p.communicate()[0]
       p.stdin.close();
-      #print output
+      print output
       
-   return getSessionsAndExploits(output)
+   return getSessionsAndExploits(output, existing)
 
-def getSessionsAndExploits(output):
+def getSessionsAndExploits(output, existing):
 
    session_db = defaultdict()
    exploitsRun = defaultdict()
@@ -85,6 +88,7 @@ def getSessionsAndExploits(output):
          'numRun': chars[7]}
 
          session_db[chars[0]] = data
+         existing += 1
 
       host = chars[0]
       exploits_run = chars[7]
@@ -102,7 +106,7 @@ def getSessionsAndExploits(output):
       i += j + 1
 
    #print session_db, exploitsRun
-   return (session_db, exploitsRun)
+   return (session_db, exploitsRun, existing)
 
 '''
 send attacks unordered

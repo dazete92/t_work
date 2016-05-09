@@ -26,6 +26,7 @@ def main():
    host_list_final = defaultdict()
    db_s_final = defaultdict()
    exploitsRun_final = defaultdict()
+   existing = 0
 
    shared_util.defineGlobals()
    prop_file_gen = False if "-init" in sys.argv else True
@@ -77,7 +78,7 @@ def main():
       ## attack generation
       attacks = atk_gen.determineAttackVectors(db_e, db_s, db_h, host_list, severity)
       #atk_gen.print_attacks(attacks)
-      (session_db, exploitsRun) = atk_gen.generate_attacks(attacks, server_ip, severity)
+      (session_db, exploitsRun, existing) = atk_gen.generate_attacks(attacks, server_ip, severity, existing)
       #print session_db
       #print "-------------------------------------"
       #print exploitsRun
