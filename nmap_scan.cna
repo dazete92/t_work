@@ -30,10 +30,11 @@ on launch_scan {
    else {
       cmd($console, "db_nmap --min-hostgroup 96 -sS -T4 -A -v -sV -n -F -O -Pn --osscan-limit --osscan-guess --version-light $ips");
    }
+   cmd_stop($console);
 }
 
 on console_db_nmap {
-   local('$console @hosts $host');
+   local('@hosts $host');
    sleep(5000);
    @hosts = host_addresses();
    foreach $host (@hosts) {

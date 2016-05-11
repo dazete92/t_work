@@ -11,6 +11,7 @@ command arguments {
    }
 
    cmd($console, "services $hosts");
+   cmd_stop($console);
 }
 
 on console_services {

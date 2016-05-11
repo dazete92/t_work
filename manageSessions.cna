@@ -37,6 +37,7 @@ on manageSessions {
       }
    }
    sleep(30000);
+   cmd_stop($console);
    fire_event_local("checkNewPrivileges", @sessions);
 }
 
@@ -92,6 +93,7 @@ on getNewSessions {
          }
       }
    }
+   cmd_stop($console);
    sleep(10000);
    quit();
 }

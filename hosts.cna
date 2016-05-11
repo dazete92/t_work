@@ -11,6 +11,7 @@ command arguments {
    }
 
    cmd($console, "hosts -c address,os_name,os_sp $hosts");
+   cmd_stop($console);
 }
 
 on console_hosts {

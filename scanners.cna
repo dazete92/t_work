@@ -19,6 +19,7 @@ on launch_portscan {
    #cmd($console, "hosts -a $ips");
    cmd_set($console, %(RHOSTS => "$ips", THREADS => "256", TIMEOUT => "200", PORTS => "22-30,53,80,100-150,389,445,650-700,990-1000,2049,3306,5000"));
    cmd($console, "run");
+   cmd_stop($console);
    #println("Running");  
 }
 
@@ -51,15 +52,15 @@ on console_run {
       cmd($console, "exploit");
       yield;
       #println("Exploit: " . "$2 => $3");
-
-      #sleep(20000);
    }
 
+   cmd($console, "jobs -K");
+   cmd_stop($console);
    fire_event_local("print_hosts");
 }
 
 on print_hosts {
-   local('$console @hosts $host');
+   local('@hosts $host');
    @hosts = host_addresses();
    foreach $host (@hosts) {
       println("$host");

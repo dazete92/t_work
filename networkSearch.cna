@@ -58,6 +58,7 @@ on networkSearch {
    }
    addPivots(%networks, @sessions);
    cmd($console, "jobs -K");
+   cmd_stop($console);
    quit();
 }
 
@@ -105,4 +106,5 @@ sub addPivots {
          }
       }
    }
+   cmd_stop($console);
 }

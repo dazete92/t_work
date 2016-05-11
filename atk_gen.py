@@ -78,7 +78,7 @@ def getSessionsAndExploits(output, existing):
    i = 0
 
    lines = output.splitlines()
-   #print "Lines: " + str(len(lines))
+   print "Lines: " + str(len(lines))
    while i < len(lines):
       #print lines[i]
       chars = lines[i].split(',')

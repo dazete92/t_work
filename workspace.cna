@@ -18,6 +18,7 @@ command arguments {
    else if ($1 eq "switch") {
       cmd($console, "workspace $2");
    }
+   cmd_stop($console);
 }
 
 on console_workspace {
