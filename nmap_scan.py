@@ -24,7 +24,7 @@ def scan_location_setup():
       print " > switch <workspace name>   Switch to an existing workspace"
       print " > current                   Use current settings\n"
    
-      i = raw_input("Enter command: ")
+      i = "current" #raw_input("Enter command: ")
       command = i.split(' ')
       if command[0] == "current":
          break
@@ -34,7 +34,7 @@ def scan_location_setup():
       p.communicate()
       p.stdin.close()
 
-   scan = raw_input("Perform scan on selected IPs? (y/n): ")
+   scan = "y" #raw_input("Perform scan on selected IPs? (y/n): ")
    return scan
    
 def scan(ip_ranges, exclude, hosts):

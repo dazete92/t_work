@@ -67,7 +67,7 @@ def generate_attacks(attacks, server_ip, severity, existing):
       p.stdin.write("arguments %s %s %s %s" % (str(counter), string, severity, existing))
       output = p.communicate()[0]
       p.stdin.close();
-      print output
+      #print output
       
    return getSessionsAndExploits(output, existing)
 

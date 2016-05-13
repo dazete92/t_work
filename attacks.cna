@@ -55,10 +55,6 @@ on prep_attacks {
       %num_exps[$tempHost] += 1;  
    }
 
-   if ($limit eq 14) {
-      println(%num_exps);
-   } 
-
    #println(%h);
    #println(%num_exps);
    #println(@hosts);
@@ -142,6 +138,7 @@ on launch_attacks {
 
    $console = console();
    cmd($console, "jobs -K");
+   yield;
    %attacks = $1;
    $payload = "";
    $count = 0;
@@ -157,6 +154,7 @@ on launch_attacks {
             $bin = getBin($numBins);
             if (size(%attacks[$host][$bin]) == 0) {
                $bin = -1;
+               #%attacks[$host] = moveBins(%attacks[$host], $bin, $numBins);
             }
             #println("loop bin: " . "$bin");
          }
@@ -186,6 +184,7 @@ on launch_attacks {
       
          sleep(15000);
          cmd($console, "jobs -K");
+         sleep(1000);
          if (size(sessions()) > $numSessions) {
             $numSessions = size(sessions());
             push(%exploits[$host][1], $name);
@@ -205,6 +204,11 @@ on launch_attacks {
    fire_event_local("sessionHandle", @hosts, %exploits, %exp_run);
 }
 
+$1 = %attacks[$host], $2 = $bin, $3 = $numBins
+sub moveBins {
+
+}
+
 #$1 = @hosts, $2 = %exploits, $3 = %exp_run
 on sessionHandle {
    local('$console @hosts %exploits %exp_run %out @ids $flag $sessionNum $host $user %r $exploit $type $port $i $j $numRun');
@@ -219,7 +223,10 @@ on sessionHandle {
    $console = console();
    @hosts = $1;
 
-   cmd($console, "jobs -K");   
+   on("console", &this);   
+
+   cmd($console, "jobs -K");
+   yield;
 
    foreach $sessionNum (@ids) {
    	%r = %out[$sessionNum];
