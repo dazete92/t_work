@@ -1,0 +1,26 @@
+* default
+
+Prop file name: __connect.prop
+
+Determine destination of scan data or previous scan data
+
+Prop file name: __connect.prop
+Workspaces (* = current):
+Commands:
+ > add <workspace name>      Add a workspace
+ > delete <workspace name>   Delete a workspace
+ > switch <workspace name>   Switch to an existing workspace
+ > current                   Use current settings
+
+Initializing Nmap scan
+172.16.221.132; 
+Scan output: 172.16.221.132
+
+Reading exploit database from .db_exploits.txt
+Generating service database
+Generating host database
+Creating Attack Vectors
+Generating attack string
+Counter: 0 172.16.221.132
+Counter: 13
+Launching attack string

