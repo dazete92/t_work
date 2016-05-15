@@ -52,7 +52,7 @@ def generate_attacks(attacks, server_ip, severity, existing):
 
    for host in attacks:
       rhost = host
-      print "Counter: " + str(counter), host
+      #print "Counter: " + str(counter), host
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
          rank = attacks[host][attack]['modRank']
@@ -62,12 +62,12 @@ def generate_attacks(attacks, server_ip, severity, existing):
    if string is not "":
       print "Launching attack string"
 
-      #print "Attack string: " + string, str(counter), existing
+      #print string
       p = subprocess.Popen(['java', '-jar', 'cortana.jar', str(shared_util.prop_file_name), 'attacks.cna'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)   
       p.stdin.write("arguments %s %s %s %s" % (str(counter), string, severity, existing))
       output = p.communicate()[0]
       p.stdin.close();
-      #print output
+      print output
       
    return getSessionsAndExploits(output, existing)
 
@@ -78,7 +78,7 @@ def getSessionsAndExploits(output, existing):
    i = 0
 
    lines = output.splitlines()
-   print "Lines: " + str(len(lines))
+   #print "Lines: " + str(len(lines))
    while i < len(lines):
       #print lines[i]
       chars = lines[i].split(',')

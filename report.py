@@ -2,16 +2,16 @@ import shared_util
 from collections import defaultdict
 
 def generateReport(ip_ranges, host_list, db_h, sessions, hierarchy, 
-   alteredSessions, targetTree, user_ranges, target_ip, severity, db_e, db_s):
+   alteredSessions, targetTree, user_ranges, target_ip, severity, db_e, db_s, attacks_final):
 
    printUserInformation(user_ranges, target_ip, severity)
-   comp_hosts = printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s)
+   comp_hosts = printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks_final)
    if target_ip is not "":
-      if target_ip in sessions:
+      if target_ip in sessions and sessions[target_ip]['success'] == "true":
          print "TARGET WAS COMPROMISED:"
-         printTree(targetTree, target_ip, comp_hosts)
       else:
          print "TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND"
+      printTree(targetTree, target_ip, comp_hosts)
    else:
       print "TARGET WAS NOT SPECIFIED"
 
@@ -57,7 +57,7 @@ def printUserInformation(user_ranges, target_ip, severity):
    print "Target IP Address: " + str(target)
    print "Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")"
 
-def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s):
+def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks):
 
    comp_hosts = defaultdict()
 
@@ -68,6 +68,7 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
       compromised = True if sessions[host['ip']]['success'] == "true" else False
       print "  OS: " + host['os_name']
       print "  VERSION: " + host['os_version']
+      print "  EXPLOITS GENERATED: " + str(len(attacks[host['ip']]))
       print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
       print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
       comp_hosts[host['ip']] = {'compromised': compromised}
@@ -84,7 +85,7 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
                print "     " + str(network)
       print "  FOUND SERVICES:"
       for s in db_s[host['ip']]:
-         print "     PORT: " + str(s['port']) + ",  PROTOCOL: " + str(s['protocol']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'])
+         print "     PORT: " + str(s['port']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'] + ", INFO: " + str(s['info']))
    printDivider()
    return comp_hosts
 

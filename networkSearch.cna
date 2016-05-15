@@ -22,10 +22,13 @@ on networkSearch {
    foreach $session (@sessions) {
       @info = split(",", $session);
 
+      #println(@info);
       $sid = @info[0];
       cmd($console, "sessions -i $sid");
+      sleep(5000);
       m_cmd($sid, "ipconfig");
       yield;
+      #println($3);
 
       @output = split('\n', $3);
       foreach $line (@output) {

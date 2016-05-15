@@ -117,7 +117,7 @@ def main():
    targetTree = target.getTargetTree(host_list_final, target_ip)
    report.generateReport(ip_ranges_final, host_list_final, db_h_final, sessions_final,
       hierarchy_final, alteredSessions_final, targetTree, user_input_ranges,
-      target_ip, severity, db_e, db_s_final)
+      target_ip, severity, db_e, db_s_final, attacks_final)
 
    ## close all open sessions
    post_exploit.closeSessions()

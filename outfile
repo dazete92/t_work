@@ -13,14 +13,4 @@ Commands:
  > current                   Use current settings
 
 Initializing Nmap scan
-172.16.221.132; 
-Scan output: 172.16.221.132
-
-Reading exploit database from .db_exploits.txt
-Generating service database
-Generating host database
-Creating Attack Vectors
-Generating attack string
-Counter: 0 172.16.221.132
-Counter: 13
-Launching attack string
+172.16.221.139;172.16.221.135;172.16.221.130; 

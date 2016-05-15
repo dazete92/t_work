@@ -34,7 +34,7 @@ def scan_location_setup():
       p.communicate()
       p.stdin.close()
 
-   scan = "y" #raw_input("Perform scan on selected IPs? (y/n): ")
+   scan = raw_input("Perform scan on selected IPs? (y/n): ")
    return scan
    
 def scan(ip_ranges, exclude, hosts):
