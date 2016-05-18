@@ -52,7 +52,7 @@ def generate_attacks(attacks, server_ip, severity, existing):
 
    for host in attacks:
       rhost = host
-      #print "Counter: " + str(counter), host
+      print "Counter: " + str(counter), host
       for attack in range(len(attacks[host])):
          name = attacks[host][attack]['name']
          rank = attacks[host][attack]['modRank']

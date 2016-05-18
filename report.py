@@ -65,27 +65,30 @@ def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db
    for h in db_h:
       host = db_h[h]
       print "HOST: " + host['ip']
-      compromised = True if sessions[host['ip']]['success'] == "true" else False
+      compromised = True if host['ip'] in sessions and sessions[host['ip']]['success'] == "true" else False
       print "  OS: " + host['os_name']
       print "  VERSION: " + host['os_version']
       print "  EXPLOITS GENERATED: " + str(len(attacks[host['ip']]))
-      print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
-      print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
-      comp_hosts[host['ip']] = {'compromised': compromised}
-      if compromised == True:
-         exploit = findExploit(host['ip'], sessions, db_e)
-         print "  EXPLOIT:"
-         print "     NAME: " + str(exploit['name'])
-         print "     DESCRIPTION: " + str(exploit['des'][:len(exploit['des']) - 1])
-         print "     OS: " + str(exploit['os'])
-         print "     EXPLOIT RANK: " + str(exploit['rank']) + " (" + str(exploit['rankNum']) + ")"
-         if host['ip'] in hierarchy:
-            print "  NETWORKS FOUND POST-EXPLOITATION:"
-            for network in hierarchy[host['ip']]:
-               print "     " + str(network)
-      print "  FOUND SERVICES:"
-      for s in db_s[host['ip']]:
-         print "     PORT: " + str(s['port']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'] + ", INFO: " + str(s['info']))
+      if str(len(attacks[host['ip']])) != "0":
+         print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
+         print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
+         comp_hosts[host['ip']] = {'compromised': compromised}
+         if compromised == True:
+            exploit = findExploit(host['ip'], sessions, db_e)
+            print "  EXPLOIT:"
+            print "     NAME: " + str(exploit['name'])
+            print "     DESCRIPTION: " + str(exploit['des'][:len(exploit['des']) - 1])
+            print "     OS: " + str(exploit['os'])
+            print "     EXPLOIT RANK: " + str(exploit['rank']) + " (" + str(exploit['rankNum']) + ")"
+            if host['ip'] in hierarchy:
+               print "  NETWORKS FOUND POST-EXPLOITATION:"
+               for network in hierarchy[host['ip']]:
+                  print "     " + str(network)
+         print "  FOUND SERVICES:"
+         for s in db_s[host['ip']]:
+            print "     PORT: " + str(s['port']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'] + ", INFO: " + str(s['info']))
+      else:
+         comp_hosts[host['ip']] = {'compromised': compromised}
    printDivider()
    return comp_hosts
 
