@@ -9,7 +9,7 @@ def getTargetTree(host_list_final, target_ip):
 
    for key in host_list_final:
       if key == treeRoot:
-         targetTree[key] = "root"
+         targetTree[key] = "ANEX"
          children.append(key)
          break
 
@@ -26,7 +26,7 @@ def getTargetTree(host_list_final, target_ip):
             del host_list_final[treeRoot]
 
          for child in children:
-            if child != "root":
+            if child != "ANEX":
                del host_list_final[child]
 
          #print "\nhost_list: " + str(host_list_final)

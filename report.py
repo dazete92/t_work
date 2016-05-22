@@ -4,37 +4,39 @@ from collections import defaultdict
 def generateReport(ip_ranges, host_list, db_h, sessions, hierarchy, 
    alteredSessions, targetTree, user_ranges, target_ip, severity, db_e, db_s, attacks_final):
 
-   printUserInformation(user_ranges, target_ip, severity)
-   comp_hosts = printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks_final)
+   report = open("report.txt", 'w')
+   printUserInformation(user_ranges, target_ip, severity, report)
+   comp_hosts = printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks_final, report)
    if target_ip is not "":
       if target_ip in sessions and sessions[target_ip]['success'] == "true":
-         print "TARGET WAS COMPROMISED:"
+         report.write("TARGET WAS COMPROMISED:" + "\n")
       else:
-         print "TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND"
-      printTree(targetTree, target_ip, comp_hosts)
+         report.write("TARGET WAS EITHER NOT COMPROMISED OR NOT FOUND" + "\n")
+      printTree(targetTree, target_ip, comp_hosts, report)
    else:
-      print "TARGET WAS NOT SPECIFIED"
+      report.write("TARGET WAS NOT SPECIFIED" + "\n")
+   report.close()
 
-def printTree(tree, target_ip, comp_hosts):
+def printTree(tree, target_ip, comp_hosts, report):
 
    counter = 0
    parents = []
    children = []
 
-   print "Target: " + str(target_ip)
+   report.write("Target: " + str(target_ip) + "\n")
    parents.append(target_ip)
    del tree[target_ip]
-   comp_hosts["root"] = {'compromised': False}
+   comp_hosts["ANEX"] = {'compromised': False}
 
    while len(tree) > 0:
       counter += 1
-      print determineOrdinalNumber(counter) + " connections:"
+      report.write(determineOrdinalNumber(counter) + " connections:" + "\n")
       for parent in parents:
          for node in tree:
             if tree[node] == parent:
                p_string = parent if comp_hosts[parent]['compromised'] == False else str(parent + "(C)")
                c_string = node if comp_hosts[node]['compromised'] == False else str(node + "(C)")
-               print "parent: " + str(p_string) + " -> child: " + str(c_string)
+               report.write("parent: " + str(p_string) + " -> child: " + str(c_string) + "\n")
                children.append(node)
 
       for child in children:
@@ -43,53 +45,53 @@ def printTree(tree, target_ip, comp_hosts):
       parents = children
       children = []
 
-def printUserInformation(user_ranges, target_ip, severity):
+def printUserInformation(user_ranges, target_ip, severity, report):
 
    target = ""
-   print "-----Provided IP Address and/or ranges-----"
+   report.write("-----Provided IP Addresses and/or Ranges-----" + "\n")
    for i in range (0, len(user_ranges)):
-      print user_ranges[i]
+      report.write(user_ranges[i] + "\n")
 
    if target_ip is "":
       target = "None"
    else:
       target = target_ip
-   print "Target IP Address: " + str(target)
-   print "Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")"
+   report.write("Target IP Address: " + str(target) + "\n")
+   report.write("Exploit Ranking Threshold: " + str(severity) + " (" + str(getSeverity(str(severity))) + ")" + "\n")
 
-def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks):
+def printDiscoveredMachines(db_h, sessions, alteredSessions, db_e, hierarchy, db_s, attacks, report):
 
    comp_hosts = defaultdict()
 
-   print "-----Discovered Machines-------------------"
+   report.write("-----Discovered Machines-------------------" + "\n")
    for h in db_h:
       host = db_h[h]
-      print "HOST: " + host['ip']
+      report.write("HOST: " + host['ip'] + "\n")
       compromised = True if host['ip'] in sessions and sessions[host['ip']]['success'] == "true" else False
-      print "  OS: " + host['os_name']
-      print "  VERSION: " + host['os_version']
-      print "  EXPLOITS GENERATED: " + str(len(attacks[host['ip']]))
+      report.write("  OS: " + host['os_name'] + "\n")
+      report.write("  VERSION: " + host['os_version'] + "\n")
+      report.write("  EXPLOITS GENERATED: " + str(len(attacks[host['ip']])) + "\n")
       if str(len(attacks[host['ip']])) != "0":
-         print "  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun']
-         print "  COMPROMISED: Yes" if compromised == True else "  COMPROMISED: No"
+         report.write("  EXPLOITS ATTEMPTED: " + sessions[host['ip']]['numRun'] + "\n")
+         report.write("  COMPROMISED: Yes\n" if compromised == True else "  COMPROMISED: No" + "\n")
          comp_hosts[host['ip']] = {'compromised': compromised}
          if compromised == True:
             exploit = findExploit(host['ip'], sessions, db_e)
-            print "  EXPLOIT:"
-            print "     NAME: " + str(exploit['name'])
-            print "     DESCRIPTION: " + str(exploit['des'][:len(exploit['des']) - 1])
-            print "     OS: " + str(exploit['os'])
-            print "     EXPLOIT RANK: " + str(exploit['rank']) + " (" + str(exploit['rankNum']) + ")"
+            report.write("  EXPLOIT:" + "\n")
+            report.write("     NAME: " + str(exploit['name']) + "\n")
+            report.write("     DESCRIPTION: " + str(exploit['des'][:len(exploit['des']) - 1]) + "\n")
+            report.write("     OS: " + str(exploit['os']) + "\n")
+            report.write("     EXPLOIT RANK: " + str(exploit['rank']) + " (" + str(exploit['modRank']) + ")" + "\n")
             if host['ip'] in hierarchy:
-               print "  NETWORKS FOUND POST-EXPLOITATION:"
+               report.write("  NETWORKS FOUND POST-EXPLOITATION:" + "\n")
                for network in hierarchy[host['ip']]:
-                  print "     " + str(network)
-         print "  FOUND SERVICES:"
+                  report.write("     " + str(network) + "\n")
+         report.write("  FOUND SERVICES:" + "\n")
          for s in db_s[host['ip']]:
-            print "     PORT: " + str(s['port']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'] + ", INFO: " + str(s['info']))
+            report.write("     PORT: " + str(s['port']) + ",  STATE: " + str(s['state']) + ",  NAME: " + str(s['name'] + ", INFO: " + str(s['info'])) + "\n")
       else:
          comp_hosts[host['ip']] = {'compromised': compromised}
-   printDivider()
+   printDivider(report)
    return comp_hosts
 
 def findExploit(ip, sessions, db_e):
@@ -113,5 +115,5 @@ def getSeverity(severity):
 
    return dic[severity] 
 
-def printDivider():
-   print "--------------------------------------------------"
+def printDivider(report):
+   report.write("--------------------------------------------------\n")

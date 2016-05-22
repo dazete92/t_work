@@ -179,7 +179,7 @@ on launch_attacks {
          cmd($console, "use $exploit");
 
          if ($payload eq "") {
-            $payload = determinePayload($os, $numSessions);
+            $payload = determinePayload($os, $6);
          }
 
          if ($os ne "multi") {

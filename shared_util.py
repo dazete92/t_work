@@ -26,7 +26,7 @@ def parseIPRanges(ip_ranges):
    for i in range(0, len(ip_ranges)):
       ip = IPNetwork(ip_ranges[i])
       for l in list(ip):
-         ips[l.__str__()] = "root"
+         ips[l.__str__()] = "ANEX"
 
    return ips
 

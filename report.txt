@@ -1,0 +1,25 @@
+-----Provided IP Addresses and/or Ranges-----
+172.16.221.4
+Target IP Address: 172.16.221.4
+Exploit Ranking Threshold: 5 (Great)
+-----Discovered Machines-------------------
+HOST: 172.16.221.4
+  OS: windows
+  VERSION: XP  SP2
+  EXPLOITS GENERATED: 10
+  EXPLOITS ATTEMPTED: 8
+  COMPROMISED: Yes
+  EXPLOIT:
+     NAME: windows/smb/ms08_067_netapi
+     DESCRIPTION: MS08-067 Microsoft Server Service Relative Path Stack Corruption
+     OS: windows
+     EXPLOIT RANK: great (5.10075)
+  FOUND SERVICES:
+     PORT: 135,  STATE: open,  NAME: msrpc, INFO: Microsoft Windows RPC
+     PORT: 139,  STATE: open,  NAME: netbios-ssn, INFO: Microsoft Windows 98 netbios-ssn
+     PORT: 445,  STATE: open,  NAME: microsoft-ds, INFO: Microsoft Windows XP microsoft-ds
+--------------------------------------------------
+TARGET WAS COMPROMISED:
+Target: 172.16.221.4
+1st connections:
+parent: 172.16.221.4(C) -> child: ANEX
